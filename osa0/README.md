@@ -1,9 +1,9 @@
 # tähän osa0 vastaukset
-0.1:
+0.1: tehty
 
-0.2:
+0.2: tehty 
 
-0.3:
+0.3: tehty
 
 0.4:
 
