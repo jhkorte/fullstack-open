@@ -1,4 +1,4 @@
-# tähän osa0 vastaukset
+# osa0
 0.1: tehty
 
 0.2: tehty 
