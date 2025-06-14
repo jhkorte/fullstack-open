@@ -1,1 +1,1 @@
-# Osa 1 tehtävät
+# Osa 1 harjoittelua ennen tehtäviä
