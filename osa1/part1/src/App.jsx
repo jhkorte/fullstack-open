@@ -17,24 +17,14 @@ const Hello = ({name, age}) => {
 }
 
 
-const Display = ({ counter }) => {
-  return (
-    <div>
-      {counter}
-    </div>
-  )
-}
+const Display = props => <div>{props.value}</div>
 
 
-const Button = (props) => { 
-  console.log(props)
-  const { onClick, text } = props
-  return (
-    <button onClick={onClick}>
-      {text}
-    </button>
-  )
-}
+const Button = (props) => (
+  <button onClick={props.onClick}>
+    {props.text}
+  </button>
+)
 
 /*
 const App = () => {
@@ -153,21 +143,17 @@ const App = () => {
 const App = (props) => {
   const [value, setValue] = useState(10)
 
-
-  const hello = (who) => {
-    const handler = () => {
-      console.log('hello', who)
-    }
-    return handler
+  const setToValue = (newValue) => {
+    console.log('value now', newValue)
+    setValue(newValue)
   }
 
   return (
     <div>
       {value}
-
-      <button onClick={hello('world')}>button</button>
-      <button onClick={hello('react')}>button</button>
-      <button onClick={hello('function')}>button</button>
+      <Button onClick={() => setToValue(1000)} text='thousand' />
+      <Button onClick={() => setToValue(0)} text='zero' />
+      <Button onClick={() => setToValue(value+1)} text='increment' />
     </div>
   )
 }
