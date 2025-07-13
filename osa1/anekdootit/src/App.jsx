@@ -21,6 +21,7 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState([0,0,0,0,0,0,0,0])
 
   const actionNextAnecdote = () => {
     console.log('next anecdote')
@@ -29,13 +30,27 @@ const App = () => {
     console.log(selected)
   } 
 
+  const actionVoteAnecdote = () => {
+    console.log('voted on anecdote number', selected)
+    const votes_copy = [...votes]
+    votes_copy[selected]++
+    setVotes(votes_copy)
+    console.log(votes)
+    console.log(votes_copy)
+  } 
 
   return (
     <div>
       <p>
         {anecdotes[selected]}
       </p>
-      <Button onClick={actionNextAnecdote} text='Random anecdote!' />
+      <p>
+        has {votes[selected]} votes
+      </p>
+      <p>
+        <Button onClick={actionVoteAnecdote} text='Vote' />
+        <Button onClick={actionNextAnecdote} text='Random anecdote' />
+      </p>
     </div>
   )
 }
