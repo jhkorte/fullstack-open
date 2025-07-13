@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+const Header = (props) => {
+  return (
+    <div>
+      <h1>
+        {props.header}
+      </h1>
+    </div>
+  )
+}
+
 
 const Button = (props) => (
   <button onClick={props.onClick}>
@@ -22,6 +32,7 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState([0,0,0,0,0,0,0,0])
+  const [indexOfMax, setIndexOfMax] = useState(0)
 
   const actionNextAnecdote = () => {
     console.log('next anecdote')
@@ -39,18 +50,31 @@ const App = () => {
     console.log(votes_copy)
   } 
 
+
   return (
     <div>
-      <p>
-        {anecdotes[selected]}
-      </p>
-      <p>
-        has {votes[selected]} votes
-      </p>
-      <p>
-        <Button onClick={actionVoteAnecdote} text='Vote' />
-        <Button onClick={actionNextAnecdote} text='Random anecdote' />
-      </p>
+      <div>
+        <Header header = "Random anecdote" />
+        <p>
+          {anecdotes[selected]}
+        </p>
+        <p>
+          has {votes[selected]} votes
+        </p>
+        <p>
+          <Button onClick={actionVoteAnecdote} text='Vote' />
+          <Button onClick={actionNextAnecdote} text='Random anecdote' />
+        </p>
+      </div>
+      <div>
+        <Header header = "Most voted anecdote" />
+        <p>
+          {anecdotes[votes.indexOf(Math.max(...votes))]}
+        </p>
+        <p>
+          has {votes[votes.indexOf(Math.max(...votes))]} votes
+        </p>
+      </div>
     </div>
   )
 }
