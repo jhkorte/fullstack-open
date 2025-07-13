@@ -19,6 +19,15 @@ const Button = (props) => (
 
 
 const Statistics = (props) => {
+  if ((props.statistics[0].value == 0) && (props.statistics[1].value == 0) && (props.statistics[2].value == 0))
+  return (
+    <div>
+      <p>
+        No feedback has been given.
+      </p>
+    </div>
+  )
+  
   return (
     <div>
       <p>
