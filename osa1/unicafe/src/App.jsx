@@ -18,54 +18,76 @@ const Button = (props) => (
 )
 
 
+const Statistics = (props) => {
+  return (
+    <div>
+      <p>
+        Good {props.statistics[0].value} <br /> 
+        Neutral {props.statistics[1].value} <br /> 
+        Bad {props.statistics[2].value} <br /> 
+        Total {props.statistics[0].value + props.statistics[1].value + props.statistics[2].value} <br /> 
+        Average {(props.statistics[0].value - props.statistics[2].value) / (props.statistics[0].value + props.statistics[1].value + props.statistics[2].value)} <br /> 
+        Pos% {(props.statistics[0].value / (props.statistics[0].value + props.statistics[1].value + props.statistics[2].value))*100} %      
+      </p>
+    </div>
+  )
+}
+
+
 const App = () => {
-  const header = 'give feedback'
-  const header2 = 'statistics'
+  const header = 'Give feedback'
 
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  const [total, setTotal] = useState(0)
-  const [average, setAverage] = useState(0)
-  const [pos, setPos] = useState(0)
+
+  const statistics = {
+    name: 'Statistics',
+    statistics: [
+      {
+        name: 'Good',
+        value: good
+      },
+      {
+        name: 'Neutral',
+        value: neutral
+      },
+      {
+        name: 'Bad',
+        value: bad
+      }
+    ]
+  }
 
   const actionFeedbackGood = () => {
     console.log('good feedback')
     console.log(good)
     setGood(good +1)
-    setTotal(total +1)
-    setAverage(average +1)
   }
 
   const actionFeedbackNeutral = () => {
     console.log('neutral feedback')
     console.log(neutral)
     setNeutral(neutral +1)
-    setTotal(total +1)
-    setAverage(average +0)
   }
 
   const actionFeedbackBad = () => {
     console.log('bad feedback')
     console.log(bad)
     setBad(bad +1)
-    setTotal(total +1)
-    setAverage(average -1)
   }
 
   return ( 
   <div>
     <div>
       <Header header = {header} />
-      <Button onClick={actionFeedbackGood} text='good' />
-      <Button onClick={actionFeedbackNeutral} text='neutral' />
-      <Button onClick={actionFeedbackBad} text='bad' />
+      <Button onClick={actionFeedbackGood} text='Good' />
+      <Button onClick={actionFeedbackNeutral} text='Neutral' />
+      <Button onClick={actionFeedbackBad} text='Bad' />
     </div>
     <div>
-      <Header header = {header2} />
-      <p>
-        good {good} <br /> neutral {neutral} <br /> bad {bad} <br /> total {total} <br /> average {average / total} <br /> pos% {(good / total)*100} %
-      </p>
+      <Header header = {statistics.name} />
+      <Statistics statistics = {statistics.statistics} />
     </div>
   </div>
   )
