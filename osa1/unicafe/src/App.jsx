@@ -19,9 +19,14 @@ const Button = (props) => (
 
 
 const StatisticLine = (props) => (
-  <div>
-      {props.text} {props.value}
-  </div>
+  <tr>
+    <td>
+      {props.text}
+    </td>
+    <td>
+      {props.value}
+    </td>
+  </tr>
 )
 
 
@@ -37,12 +42,16 @@ const Statistics = (props) => {
 
   return (
     <div>
-      <StatisticLine text = "Good"    value = {props.statistics[0].value} />
-      <StatisticLine text = "Neutral" value = {props.statistics[1].value} />
-      <StatisticLine text = "Bad"     value = {props.statistics[2].value} />
-      <StatisticLine text = "Total"   value = {props.statistics[0].value + props.statistics[1].value + props.statistics[2].value} />
-      <StatisticLine text = "Average" value = {(props.statistics[0].value - props.statistics[2].value) / (props.statistics[0].value + props.statistics[1].value + props.statistics[2].value)} />
-      <StatisticLine text = "Pos%"    value = {(props.statistics[0].value / (props.statistics[0].value + props.statistics[1].value + props.statistics[2].value))*100} />
+      <table>
+        <tbody>
+          <StatisticLine text = "Good"    value = {props.statistics[0].value} />
+          <StatisticLine text = "Neutral" value = {props.statistics[1].value} />
+          <StatisticLine text = "Bad"     value = {props.statistics[2].value} />
+          <StatisticLine text = "Total"   value = {props.statistics[0].value + props.statistics[1].value + props.statistics[2].value} />
+          <StatisticLine text = "Average" value = {(props.statistics[0].value - props.statistics[2].value) / (props.statistics[0].value + props.statistics[1].value + props.statistics[2].value)} />
+          <StatisticLine text = "Pos%"    value = {(props.statistics[0].value / (props.statistics[0].value + props.statistics[1].value + props.statistics[2].value))*100} />
+        </tbody>
+      </table>
     </div>
   )
 }
