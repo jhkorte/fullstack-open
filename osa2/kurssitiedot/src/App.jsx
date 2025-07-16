@@ -1,35 +1,91 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
+const Header = (props) => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <h1>
+        {props.header}
+      </h1>
+    </div>
   )
 }
+
+
+const Content = (props) => {
+  // console.log(props)
+  return (
+    <div>
+      <Part partname = {props.parts[0].name} ex = {props.parts[0].exercises} />
+      <Part partname = {props.parts[1].name} ex = {props.parts[1].exercises} />
+      <Part partname = {props.parts[2].name} ex = {props.parts[2].exercises} />
+    </div>
+  )
+}
+
+
+const Part = (props) => {
+  return (
+    <div>
+      <p>
+        {props.partname} {props.ex}
+      </p>
+    </div>
+  )
+}
+
+
+const Total = (props) => {
+  return (
+    <div>
+      <p>
+        Number of exercises {props.parts[0].exercises+props.parts[1].exercises+props.parts[2].exercises}
+      </p>
+    </div>
+  )
+}
+
+
+const Course = (props) => {
+  return (
+    <div>
+      <div>
+        <Header header = {props.course.name} />
+      </div>
+      <div>
+        <Content parts = {props.course.parts} />
+      </div>
+    </div>
+  )
+}
+
+
+const App = () => {
+  const course = {
+    name: 'Half Stack application development',
+    id: 1,
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+        id: 1
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+        id: 3
+      }
+    ]
+  }
+
+  return (
+    <div>
+      <Course course = {course} />
+    </div>
+  )
+}
+
 
 export default App
