@@ -17,7 +17,7 @@ const Content = (props) => {
       <Part partname = {props.parts[0].name} ex = {props.parts[0].exercises} />
       <Part partname = {props.parts[1].name} ex = {props.parts[1].exercises} />
       <Part partname = {props.parts[2].name} ex = {props.parts[2].exercises} />
-      code block above is rewritten more neatly below
+      code block above is rewritten more neatly below.
       */}
       {props.parts.map(part => 
         <Part key={part.id} partname={part.name} ex={part.exercises} />
@@ -46,7 +46,7 @@ const Total = (props) => {
         <b>
           {/*
           Number of exercises {props.parts[0].exercises+props.parts[1].exercises+props.parts[2].exercises}
-          code block above is rewritten more neatly below
+          code block above is rewritten more neatly below.
           */}
           Number of exercises {props.parts.reduce((sum, part) => sum+part.exercises,0)}
         </b>
