@@ -86,6 +86,7 @@ const App = () => {
     console.log('good feedback')
     console.log(good)
     setGood(good +1)
+    
   }
 
   const actionFeedbackNeutral = () => {
@@ -115,5 +116,6 @@ const App = () => {
   </div>
   )
 }
+
 
 export default App
