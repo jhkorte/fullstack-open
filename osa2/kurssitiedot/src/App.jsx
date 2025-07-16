@@ -10,12 +10,18 @@ const Header = (props) => {
 
 
 const Content = (props) => {
-  // console.log(props)
+  console.log('rendering content, with props', props)
   return (
-    <div>
+    <div>      
+      {/*
       <Part partname = {props.parts[0].name} ex = {props.parts[0].exercises} />
       <Part partname = {props.parts[1].name} ex = {props.parts[1].exercises} />
       <Part partname = {props.parts[2].name} ex = {props.parts[2].exercises} />
+      code block above is rewritten more neatly below
+      */}
+      {props.parts.map(part => 
+        <Part key={part.id} partname={part.name} ex={part.exercises} />
+      )}
     </div>
   )
 }
@@ -25,7 +31,7 @@ const Part = (props) => {
   return (
     <div>
       <p>
-        {props.partname} {props.ex}
+        {props.partname} {props.ex} 
       </p>
     </div>
   )
@@ -33,10 +39,17 @@ const Part = (props) => {
 
 
 const Total = (props) => {
+  console.log('counting total, with props', props)
   return (
     <div>
       <p>
-        Number of exercises {props.parts[0].exercises+props.parts[1].exercises+props.parts[2].exercises}
+        <b>
+          {/*
+          Number of exercises {props.parts[0].exercises+props.parts[1].exercises+props.parts[2].exercises}
+          code block above is rewritten more neatly below
+          */}
+          Number of exercises {props.parts.reduce((sum, part) => sum+part.exercises,0)}
+        </b>
       </p>
     </div>
   )
@@ -51,6 +64,9 @@ const Course = (props) => {
       </div>
       <div>
         <Content parts = {props.course.parts} />
+      </div>
+      <div>
+        <Total parts = {props.course.parts} />
       </div>
     </div>
   )
