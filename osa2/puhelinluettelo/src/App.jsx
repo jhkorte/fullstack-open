@@ -11,13 +11,28 @@ const App = () => {
 
   const [newName, setNewName] = useState('')
 
+
+  const personAlreadyExists = (persons, newPerson) => {
+    const matches = persons.filter(person => person.name === newPerson.name)
+    return matches.length > 0
+  }
+
   const handleAddPerson = (event) => {
-    console.log('persons before adding', persons)
     event.preventDefault()
     const newPerson = { name: newName }
-    setPersons([...persons, newPerson])
-    setNewName('')
-    //console.log('persons after adding', persons)
+    console.log('persons before adding', persons)
+    if (!personAlreadyExists(persons, newPerson)) {
+      setPersons([...persons, newPerson])
+      setNewName('')
+      //console.log('persons after adding', persons)
+    }
+
+    else {
+      console.log('person already exists')
+      setNewName('')
+      alert(`${newName} already exists!`)
+    }
+    
   }
   
   const handleNameChange = (event) => {
