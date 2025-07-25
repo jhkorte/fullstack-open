@@ -1,6 +1,56 @@
 import { useState } from 'react'
 
 
+const PersonForm = (props) => {
+  return (
+    <div>
+    <form onSubmit={props.handleAddPerson}>
+        <div>
+          Name: <input 
+                  value={props.newName} 
+                  onChange={props.handleNameChange} 
+                />
+        </div>
+        <div>
+          Number: <input 
+                  value={props.newNumber}
+                  onChange={props.handleNumberChange}
+                  />
+        </div>
+        <div>
+          <button type="submit">Add to phonebook</button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+
+const Persons = (props) => {
+  return (
+    <div>
+      {props.personsToShow.map((person) => (
+        <div key={person.name}> {person.name} {person.number} </div>
+      ))}
+    </div>
+  )
+}
+
+
+const Search = (props) => {
+  return (
+    <form onSubmit={props.handleSearchPersons}>
+        <div>
+          Search: <input
+                    value={props.newSearch}
+                    onChange={props.handleSearchChange}
+                  />
+        </div>
+        <div>To see the full list, leave the search bar empty</div>
+    </form>
+  )
+}
+
 
 
 const App = () => {
@@ -31,18 +81,21 @@ const App = () => {
     console.log(`persons before adding ${newName} ${newNumber}`, persons)
 
     if (!personAlreadyExists(persons, newPerson)) {
-      setPersons([...persons, newPerson])
-      //console.log('persons after adding', persons)
+      // Rewrote this, now search works as intended when adding a new person to phonebook
+      const updatedPersons = [...persons, newPerson]
+      setPersons(updatedPersons)
+      setPersonsToShow(updatedPersons)
     }
 
     else {
       console.log('person already exists')
-      alert(`${newName} ${newNumber} already exists!`)
+      alert(`${newName} already exists!`)
     }
 
     setNewName('')
     setNewNumber('')
-
+    
+    console.log('calling search function through addPerson, with persons', persons)
   }
 
 
@@ -75,44 +128,30 @@ const App = () => {
     <div>
 
       <h2>Phonebook</h2>
-      <form onSubmit={handleSearchPersons}>
-        <div>
-          Search: <input
-                    value={newSearch}
-                    onChange={handleSearchChange}
-                  />
-        </div>
-        <div>To see the full list, leave the search bar empty</div>
-      </form>
 
 
-      <h2>Add a new person to the phonebook</h2>
-      <form onSubmit={handleAddPerson}>
-        <div>
-          Name: <input 
-                  value={newName} 
-                  onChange={handleNameChange} 
-                />
-        </div>
-        <div>
-          Number: <input 
-                  value={newNumber}
-                  onChange={handleNumberChange}
-                  />
-        </div>
-        <div>debug: {newName} {newNumber} </div>
-        <div>
-          <button type="submit">Add to phonebook</button>
-        </div>
-      </form>
+      <h3>Add a new person to the phonebook</h3>
+      <PersonForm
+        handleAddPerson={handleAddPerson}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+        newName={newName}
+        newNumber={newNumber}
+      />
 
 
-      <h2>Numbers</h2>
-      <div>
-        {personsToShow.map((person) => (
-          <div key={person.name}> {person.name} {person.number} </div>
-        ))}
-      </div>
+      <h3>Search</h3>
+      <Search 
+        handleSearchPersons={handleSearchPersons}
+        handleSearchChange={handleSearchChange}
+        newSearch={newSearch}
+      />
+
+
+      <h3>Numbers</h3>
+      <Persons
+        personsToShow={personsToShow}
+      />
 
     </div>
   )
