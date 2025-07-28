@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 
 const PersonForm = (props) => {
@@ -99,16 +100,28 @@ const App = () => {
     const newPerson = { name: newName , number: newNumber}
     console.log(`persons before adding ${newName} ${newNumber}`, persons)
 
-    if (!personAlreadyExists(persons, newPerson)) {
+    if (personAlreadyExists(persons, newPerson)) {
+      console.log('person already exists')
+      alert(`${newName} already exists!`)
+    }
+
+    else {
       // Rewrote this, now search works as intended when adding a new person to phonebook
       const updatedPersons = [...persons, newPerson]
       setPersons(updatedPersons)
       setPersonsToShow(updatedPersons)
-    }
 
-    else {
-      console.log('person already exists')
-      alert(`${newName} already exists!`)
+      const personObject = {
+        name: newName,
+        number: newNumber
+      }
+
+      personService
+        .create(personObject)
+          .then(returnedPerson => {
+            setPersons([...persons, returnedPerson])
+            setPersonsToShow([...persons, returnedPerson])
+          })
     }
 
     setNewName('')
