@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 
 const PersonForm = (props) => {
@@ -54,13 +55,31 @@ const Search = (props) => {
 
 
 const App = () => {
-
+  /* OLD: Hard-coded example data, keep this here for now in case something breaks
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
     { name: 'Ada Lovelace', number: '39-44-5323523' },
     { name: 'Dan Abramov', number: '12-43-234345' },
     { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ])
+  */
+
+  const [persons, setPersons] = useState([])
+
+  const hook = () => {
+    console.log('effect')
+    axios
+    .get('http://localhost:3001/persons')
+    .then(response => {
+      console.log('promise fulfilled')
+      setPersons(response.data)
+      setPersonsToShow(response.data)
+    })
+  }
+  console.log('render', persons.length, 'persons')
+
+  useEffect(hook, [])
+
 
   const [personsToShow, setPersonsToShow] = useState([...persons])
 
@@ -155,6 +174,7 @@ const App = () => {
 
     </div>
   )
+  
 }
 
 export default App
