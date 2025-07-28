@@ -32,7 +32,13 @@ const Persons = (props) => {
   return (
     <div>
       {props.personsToShow.map((person) => (
-        <div key={person.name}> {person.name} {person.number} </div>
+        <div key={person.name}> 
+        {person.name} 
+        {'  '}
+        {person.number}
+        {'  '}
+        <button onClick={() => props.deletePerson(person.id)}> Delete </button>
+        </div>
       ))}
     </div>
   )
@@ -155,6 +161,14 @@ const App = () => {
   }
 
 
+  const deletePerson = (id) => {
+    console.log(`wish to delete ${id}`)
+    personService.deleteItem(id)
+
+    //The site is reloaded so that the deletion can be seen in real-time
+    window.location.reload()
+  }
+
 
   return (
     <div>
@@ -183,6 +197,7 @@ const App = () => {
       <h3>Numbers</h3>
       <Persons
         personsToShow={personsToShow}
+        deletePerson={deletePerson}
       />
 
     </div>
