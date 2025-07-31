@@ -1,63 +1,10 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
-
-
-const PersonForm = (props) => {
-  return (
-    <div>
-    <form onSubmit={props.handleAddPerson}>
-        <div>
-          Name: <input 
-                  value={props.newName} 
-                  onChange={props.handleNameChange} 
-                />
-        </div>
-        <div>
-          Number: <input 
-                  value={props.newNumber}
-                  onChange={props.handleNumberChange}
-                  />
-        </div>
-        <div>
-          <button type="submit">Add to phonebook</button>
-        </div>
-      </form>
-    </div>
-  )
-}
-
-
-const Persons = (props) => {
-  return (
-    <div>
-      {props.personsToShow.map((person) => (
-        <div key={person.name}> 
-        {person.name} 
-        {'  '}
-        {person.number}
-        {'  '}
-        <button onClick={() => props.deletePerson(person.id)}> Delete </button>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-
-const Search = (props) => {
-  return (
-    <form onSubmit={props.handleSearchPersons}>
-        <div>
-          Search: <input
-                    value={props.newSearch}
-                    onChange={props.handleSearchChange}
-                  />
-        </div>
-        <div>To see the full list, leave the search bar empty</div>
-    </form>
-  )
-}
+import Search from './components/Search'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 
 
@@ -72,6 +19,9 @@ const App = () => {
   */
 
   const [persons, setPersons] = useState([])
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState(null)
+
 
   const hook = () => {
     console.log('effect')
@@ -131,6 +81,15 @@ const App = () => {
           setPersons(updatedPersons)
           setPersonsToShow(updatedPersons)
         })
+
+        setNotificationMessage(
+          `Updated '${replacePersonObject.name}' with new number '${newNumber}'`
+        )
+        setNotificationType('good')
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType(null)
+        }, 5000)
     }
 
     else {
@@ -194,6 +153,8 @@ const App = () => {
 
   return (
     <div>
+
+      <Notification message = {notificationMessage} type = {notificationType} />
 
       <h2>Phonebook</h2>
 
