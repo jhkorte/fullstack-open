@@ -108,7 +108,29 @@ const App = () => {
 
     if (personAlreadyExists(persons, newPerson)) {
       console.log('person already exists')
-      alert(`${newName} already exists!`)
+      const confirmReplacement = window.confirm(`${newName} already exists in the phonebook. Replace the old number with ${newNumber}?`)
+      if (!confirmReplacement) return
+
+      //If replacement is to be done:
+
+      console.log('confirm to replace number')
+
+      const personToBeReplaced = persons.find(person => person.name === newName)
+      
+      const replacePersonObject = {
+        name: newName,
+        number: newNumber
+      }
+
+      console.log(`attempting to replace person '${personToBeReplaced.name}' of id '${personToBeReplaced.id}' and number '${personToBeReplaced.number}' with new number '${replacePersonObject.number}'`)
+
+      personService
+      .updateNumber(personToBeReplaced.id, replacePersonObject)
+        .then(returnedPerson => {
+          const updatedPersons = persons.map(person => person.id === returnedPerson.id ? returnedPerson : person)
+          setPersons(updatedPersons)
+          setPersonsToShow(updatedPersons)
+        })
     }
 
     else {
@@ -183,6 +205,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
         newName={newName}
         newNumber={newNumber}
+
       />
 
 
