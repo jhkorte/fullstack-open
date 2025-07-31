@@ -109,6 +109,15 @@ const App = () => {
             setPersons([...persons, returnedPerson])
             setPersonsToShow([...persons, returnedPerson])
           })
+
+      setNotificationMessage(
+        `Added '${personObject.name}'`
+      )
+      setNotificationType('good')
+      setTimeout(() => {
+        setNotificationMessage(null)
+        setNotificationType(null)
+      }, 5000)
     }
 
     setNewName('')
@@ -143,11 +152,25 @@ const App = () => {
 
 
   const deletePerson = (id) => {
-    console.log(`wish to delete ${id}`)
-    personService.deleteItem(id)
+    console.log(`attempting to delete ${id}`)
+    const personToDelete = persons.find(p => p.id === id);
+    personService
+    .deleteItem(id)
+    .then(() => {
+      const updatedPersons = persons.filter(person => person.id !== id);
+      setPersons(updatedPersons);
+      setPersonsToShow(updatedPersons);
 
-    //The site is reloaded so that the deletion can be seen in real-time
-    window.location.reload()
+      setNotificationMessage(
+        `Deleted '${personToDelete.name}'`
+      )
+      setNotificationType('good')
+
+      setTimeout(() => {
+        setNotificationMessage(null);
+        setNotificationType(null);
+      }, 5000)
+    })
   }
 
 
