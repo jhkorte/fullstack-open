@@ -9,14 +9,6 @@ import Notification from './components/Notification'
 
 
 const App = () => {
-  /* OLD: Hard-coded example data, keep this here for now in case something breaks
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
-  */
 
   const [persons, setPersons] = useState([])
   const [notificationMessage, setNotificationMessage] = useState(null)
@@ -34,12 +26,10 @@ const App = () => {
     })
   }
   console.log('render', persons.length, 'persons')
-
   useEffect(hook, [])
 
 
   const [personsToShow, setPersonsToShow] = useState([...persons])
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
@@ -61,6 +51,7 @@ const App = () => {
       const confirmReplacement = window.confirm(`${newName} already exists in the phonebook. Replace the old number with ${newNumber}?`)
       if (!confirmReplacement) return
 
+
       //If replacement is to be done:
 
       console.log('confirm to replace number')
@@ -81,6 +72,28 @@ const App = () => {
           setPersons(updatedPersons)
           setPersonsToShow(updatedPersons)
         })
+        .catch(error => {
+          console.log(error)
+
+          setNotificationMessage(
+            `${replacePersonObject.name} has already been removed from the server`
+          )
+          setNotificationType('error')
+
+          setTimeout(() => {
+            setNotificationMessage(null)
+            setNotificationType(null)
+          }, 5000)
+
+
+          // New search again after informing user that action couldnt be completedd
+          axios.get('http://localhost:3001/persons')
+            .then(response => {
+              setPersons(response.data)
+              setPersonsToShow(response.data)
+            })
+
+        })
 
         setNotificationMessage(
           `Updated '${replacePersonObject.name}' with new number '${newNumber}'`
@@ -90,6 +103,11 @@ const App = () => {
           setNotificationMessage(null)
           setNotificationType(null)
         }, 5000)
+        .then(() => {
+          const updatedPersons = [...persons]
+          setPersons(updatedPersons)
+          setPersonsToShow(updatedPersons)
+        })
     }
 
     else {
@@ -153,13 +171,13 @@ const App = () => {
 
   const deletePerson = (id) => {
     console.log(`attempting to delete ${id}`)
-    const personToDelete = persons.find(p => p.id === id);
+    const personToDelete = persons.find(p => p.id === id)
     personService
     .deleteItem(id)
     .then(() => {
-      const updatedPersons = persons.filter(person => person.id !== id);
-      setPersons(updatedPersons);
-      setPersonsToShow(updatedPersons);
+      const updatedPersons = persons.filter(person => person.id !== id)
+      setPersons(updatedPersons)
+      setPersonsToShow(updatedPersons)
 
       setNotificationMessage(
         `Deleted '${personToDelete.name}'`
@@ -167,7 +185,7 @@ const App = () => {
       setNotificationType('good')
 
       setTimeout(() => {
-        setNotificationMessage(null);
+        setNotificationMessage(null)
         setNotificationType(null);
       }, 5000)
     })
@@ -175,7 +193,7 @@ const App = () => {
 
 
   return (
-    <div>
+    <div className='defaultApp'>
 
       <Notification message = {notificationMessage} type = {notificationType} />
 

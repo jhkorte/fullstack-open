@@ -66,6 +66,10 @@ button:focus-visible {
   font-size: 20px;
 }
 
+.defaultApp {
+  margin: 30px;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
