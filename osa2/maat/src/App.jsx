@@ -4,7 +4,6 @@ import Search from './components/Search'
 
 function App() {
   
-  // Note to self: newSearchValue is the value in the search bar in real time, country is what is searched in the end
   const [newSearchValue, setNewSearchValue] = useState('')
   const [shown, setShown] = useState([])
   const [shownCountryInfo, setShownCountryInfo] = useState(null)
@@ -15,7 +14,6 @@ function App() {
   }
 
 
-  //TODO: make into real time
   useEffect(() => {
     console.log('useEffect ran, newSearchValue is: ', newSearchValue)
 
@@ -50,10 +48,15 @@ function App() {
 
         })
     }
-    console.log('shown is', shown)
+    console.log('shown is', )
   }, [newSearchValue])
 
   
+  const goToCountry = (name) => {
+    setNewSearchValue(name)
+  }
+
+
   return (
     <div>
       <h1>Country search</h1>
@@ -65,8 +68,17 @@ function App() {
 
       <div>
         <h2>
-        {shown.map(name => (
-          <div key={name}>{name}</div>
+        { //For future reference: added this conditionality, so that the 'show' button isn't there if already showing the contents of some country
+        shown.length > 1 
+        ?
+        shown.map(name => (
+          <div key={name}>{name}
+          <button onClick={() => goToCountry(name)}>Show</button>
+          </div>))
+        :
+          shown.map(name => (
+          <div key={name}>{name}
+          </div>
         ))}
         </h2>
 
@@ -77,8 +89,7 @@ function App() {
           {shownCountryInfo ? `Languages` : null} <br />
         </h3>
 
-
-        {//This checks that shownCountryInfo is not null before rendering the languages
+        { //This checks that shownCountryInfo is not null before rendering the languages
           shownCountryInfo && (
             <ul>
               {Object.values(shownCountryInfo.languages).map(language => 
@@ -87,7 +98,6 @@ function App() {
             </ul>
           )
         } 
-
 
         {
           shownCountryInfo && (
