@@ -1,3 +1,8 @@
+.defaultApp {
+  margin: 1px
+}
+
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

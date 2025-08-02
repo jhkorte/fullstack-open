@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import './App.css'
 import axios from 'axios'
 import Search from './components/Search'
 
@@ -70,7 +69,34 @@ function App() {
           <div key={name}>{name}</div>
         ))}
         </h2>
-         {shownCountryInfo ? `Capital: ${shownCountryInfo.capital}` : null }
+
+        {shownCountryInfo ? `Capital: ${shownCountryInfo.capital}` : null } <br />
+        {shownCountryInfo ? `Area: ${shownCountryInfo.area}` : null } <br />
+
+        <h3>
+          {shownCountryInfo ? `Languages` : null} <br />
+        </h3>
+
+
+        {//This checks that shownCountryInfo is not null before rendering the languages
+          shownCountryInfo && (
+            <ul>
+              {Object.values(shownCountryInfo.languages).map(language => 
+                <li key={language}> {language}  </li>
+              )}
+            </ul>
+          )
+        } 
+
+
+        {
+          shownCountryInfo && (
+            <div>
+              <img src ={shownCountryInfo.flags.png} alt={shownCountryInfo.flags.alt} />
+            </div>
+          )
+        }
+        
       </div>
   
     </div>
