@@ -7,15 +7,8 @@ function App() {
   
   // Note to self: newSearchValue is the value in the search bar in real time, country is what is searched in the end
   const [newSearchValue, setNewSearchValue] = useState('')
-  const [country, setCountry] = useState(null)
   const [shown, setShown] = useState([])
   const [shownCountryInfo, setShownCountryInfo] = useState(null)
-
-
-  const handleSearch = (e) => {
-    e.preventDefault()
-    setCountry(newSearchValue)
-  }
 
   const handleSearchChange = (e) => {
     setNewSearchValue(e.target.value)
@@ -25,38 +18,41 @@ function App() {
 
   //TODO: make into real time
   useEffect(() => {
-    console.log('useEffect ran, country is: ', country)
+    console.log('useEffect ran, newSearchValue is: ', newSearchValue)
 
-    if (country) {
-      console.log('Searching now with country: ', country)
+    if (newSearchValue) {
+      console.log('Searching now with newSearchValue: ', newSearchValue)
       axios
         .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
         .then(response => {
-          if (response.data.filter(countries => countries.name.common.toLowerCase().includes(country.toLowerCase())).length > 10) {
+          const countryMatches = response.data.filter(countries => countries.name.common.toLowerCase().includes(newSearchValue.toLowerCase()))
+          
+          if (countryMatches.length > 10) {
             setShown(['Too many matches, please narrow down your search'])
+            setShownCountryInfo(null)
           }
-          else if (response.data.filter(countries => countries.name.common.toLowerCase().includes(country.toLowerCase())).length > 1) {
-            setShown(response.data
-              .filter(countries => countries.name.common.toLowerCase().includes(country.toLowerCase()))
-              .map(country => country.name.common)
-            )
+          else if (countryMatches.length > 1) {
+            setShown(countryMatches.map(country => country.name.common))
+            setShownCountryInfo(null)
           }
-          else {
-            setShown(response.data
-              .filter(countries => countries.name.common.toLowerCase().includes(country.toLowerCase()))
-              .map(country => country.name.common)
-            )
-            axios.get(`https://studies.cs.helsinki.fi/restcountries/api/name/${shown[0].toLowerCase()}`)
+          else if (countryMatches.length === 1) {
+            const countryMatch = countryMatches[0]
+            setShown([countryMatch.name.common])
+            axios.get(`https://studies.cs.helsinki.fi/restcountries/api/name/${countryMatch.name.common.toLowerCase()}`)
             .then(response => {
-              console.log(response)
-              console.log(shown[0].toLowerCase())
-              setShownCountryInfo(response)
+              console.log(response.data)
+              setShownCountryInfo(response.data)
             })
           }
+          else {
+            setShown(['No matches found with this search'])
+            setShownCountryInfo(null)
+          }
+
         })
     }
     console.log('shown is', shown)
-  }, [country])
+  }, [newSearchValue])
 
   
   return (
@@ -64,26 +60,19 @@ function App() {
       <h1>Country search</h1>
       
       <Search 
-        handleSearch={handleSearch}
         handleSearchChange={handleSearchChange}
         newSearch={newSearchValue}
       />
 
-      <pre>
-        DEBUG: <br />
-        {JSON.stringify(shown, null, 2)}
-      </pre>
-      
       <div>
+        <h2>
         {shown.map(name => (
           <div key={name}>{name}</div>
         ))}
+        </h2>
+         {shownCountryInfo ? `Capital: ${shownCountryInfo.capital}` : null }
       </div>
   
-    {
-      //TODO: Render the info of country 
-    }
-
     </div>
   )
 }

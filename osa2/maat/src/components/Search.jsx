@@ -1,6 +1,6 @@
 const Search = (props) => {
   return (
-    <form onSubmit={props.handleSearch}>
+    <form>
         <div>
           Search: <input
                     value={props.newSearch}
