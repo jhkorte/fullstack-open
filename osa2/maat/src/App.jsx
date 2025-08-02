@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Search from './components/Search'
 
+// The API used is www.weatherapi.com
 const api_key = import.meta.env.VITE_SOME_KEY
 
 
