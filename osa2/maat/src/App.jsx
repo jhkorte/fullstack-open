@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Search from './components/Search'
 
+const api_key = import.meta.env.VITE_SOME_KEY
+
+
 function App() {
   
   const [newSearchValue, setNewSearchValue] = useState('')
   const [shown, setShown] = useState([])
   const [shownCountryInfo, setShownCountryInfo] = useState(null)
+  const [shownCountryWeatherData, setShownCountryWeatherData] = useState(null)
 
   const handleSearchChange = (e) => {
     setNewSearchValue(e.target.value)
@@ -39,6 +43,11 @@ function App() {
             .then(response => {
               console.log(response.data)
               setShownCountryInfo(response.data)
+            })
+            axios.get(`http://api.weatherapi.com/v1/current.json?key=%20${api_key}&q=${countryMatch.capital[0]}&aqi=no`)
+            .then(response => {
+              console.log(response.data)
+              setShownCountryWeatherData(response.data)
             })
           }
           else {
@@ -104,6 +113,22 @@ function App() {
             <div>
               <img src ={shownCountryInfo.flags.png} alt={shownCountryInfo.flags.alt} />
             </div>
+          )
+        }
+
+        <br />
+
+        { //If shownCountryWeatherData is null, show 'Error with weather API'
+          shownCountryInfo && shownCountryWeatherData ? (
+            <div>
+              <h3>Weather in {shownCountryInfo.capital}</h3>  
+              Temperature {shownCountryWeatherData.current.temp_c} Celsius <br />
+              Wind {shownCountryWeatherData.current.wind_kph} KPH
+            </div>
+          )
+          : shownCountryInfo &&
+          (
+            <div> Error with weather API: null object </div>
           )
         }
         
