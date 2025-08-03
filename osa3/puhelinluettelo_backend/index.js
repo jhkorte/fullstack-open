@@ -36,6 +36,16 @@ app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
 
+app.get('/info', (request, response) => {
+    response.send(
+        `<div>
+        This phonebook has info for ${Math.max(...persons.map(person => Number(person.id)))} people <br />
+        ${Date()}
+        </div>`
+    )
+    
+})
+
 
 const PORT = 3001
 app.listen(PORT, () => {
