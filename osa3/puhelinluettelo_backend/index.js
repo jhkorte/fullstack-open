@@ -56,6 +56,23 @@ app.get('/api/persons/:id', (request, response) => {
     }
 })
 
+app.delete('/api/persons/:id', (request, response) => {
+    const id = request.params.id
+
+    //Check if ID exists in persons
+    if (persons.some(person => person.id === id)) {
+        persons = persons.filter(person => person.id !== id)
+        console.log(`Deleting person id ${id}`)
+        console.log(persons)
+
+        response.status(204).end()
+    } else {
+        console.log(`No person found with id ${id}`)
+        response.status(404).end()
+    }
+    
+})
+
 
 const PORT = 3001
 app.listen(PORT, () => {
