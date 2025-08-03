@@ -20,7 +20,7 @@ let persons = [
         number: "12-43-234345",
     },
     {
-        id: "4",
+        id: "45000",
         name: "Mary Poppendieck",
         number: "39-23-6423122",
     },
@@ -39,7 +39,7 @@ app.get('/api/persons', (request, response) => {
 app.get('/info', (request, response) => {
     response.send(
         `<div>
-        This phonebook has info for ${Math.max(...persons.map(person => Number(person.id)))} people <br />
+        This phonebook has info for ${persons.length} people <br />
         ${Date()}
         </div>`
     )
@@ -70,7 +70,29 @@ app.delete('/api/persons/:id', (request, response) => {
         console.log(`No person found with id ${id}`)
         response.status(404).end()
     }
+})
+
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+
     
+    if (!body.name || !body.number) {
+        return response.status(400).json({
+            error: 'name or number is missing from your post request'
+        })
+    }
+
+    const person = {
+        id: String(Math.floor(Math.random()*10000)),
+        name: body.name,
+        number: body.number,
+    }
+
+    persons = persons.concat(person)
+    response.json(person)
+
+    console.log('added new person')
+    console.log(persons)
 })
 
 
