@@ -103,18 +103,14 @@ const App = () => {
           setNotificationMessage(null)
           setNotificationType(null)
         }, 5000)
-        .then(() => {
-          const updatedPersons = [...persons]
-          setPersons(updatedPersons)
-          setPersonsToShow(updatedPersons)
-        })
+        
+        const updatedPersons = [...persons]
+        setPersons(updatedPersons)
+        setPersonsToShow(updatedPersons)
     }
 
+    // Creating a completely new person
     else {
-      // Rewrote this, now search works as intended when adding a new person to phonebook
-      const updatedPersons = [...persons, newPerson]
-      setPersons(updatedPersons)
-      setPersonsToShow(updatedPersons)
 
       const personObject = {
         name: newName,
@@ -126,6 +122,15 @@ const App = () => {
           .then(returnedPerson => {
             setPersons([...persons, returnedPerson])
             setPersonsToShow([...persons, returnedPerson])
+          })
+          .catch(error => {
+            console.error('Error: new person couldnt be added:', error.response.data.error)
+            setNotificationMessage(error.response.data.error)
+            setNotificationType('error')
+            setTimeout(() => {
+              setNotificationMessage(null)
+              setNotificationType(null)
+            },5000)
           })
 
       setNotificationMessage(

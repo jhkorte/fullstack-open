@@ -115,25 +115,16 @@ app.delete('/api/persons/:id', (request, response, next) => {
         .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
+    /*
     if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'name or number is missing from your post request'
         })
     }
-
-    /*  Re-written below to work with mongodb. This code is for the hard-coded "database". 
-        Leaving this here for now, for reference.
-
-    if (persons.some(person => person.name === body.name)) {
-        console.log('attempted to add non-unique person')
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
-    */
+    
 
     Person.findOne( { name: body.name }).then(existingPerson => {
         if (existingPerson) {
@@ -158,6 +149,25 @@ app.post('/api/persons', (request, response) => {
             })
         })
     })
+    */
+
+
+    const person = new Person({
+        name: body.name,
+        number: body.number,
+    })
+
+    person.save()
+        .then(savedPerson => {
+            response.json(savedPerson)
+            console.log('added new person', savedPerson)
+            Person.find({}).then(persons => {
+                console.log('After adding new person:')
+                persons.forEach(person => console.log(person))
+            })
+        })
+        .catch(error => next(error))    
+    
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -195,6 +205,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
