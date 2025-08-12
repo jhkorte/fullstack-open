@@ -45,9 +45,40 @@ const mostBlogs = (blogs) => {
     }
 }
 
+const mostLikes = (blogs) => {
+    if (blogs.length === 0) return 0
+
+    const blogAuthors = blogs.map(blog => blog.author)
+    const blogLikes = blogs.map(blog => blog.likes)
+
+    // Make an array of unique names
+    const reducer = (accumulator, name) => {
+        if (!accumulator.includes(name)) accumulator.push(name)
+        return accumulator
+    }
+    const uniqueAuthors = blogAuthors.reduce(reducer, [])
+
+    // Make into a hasmhap with all the unique author names and value 0
+    const authorLikesObject = Object.fromEntries(uniqueAuthors.map(name => [name, 0]))
+
+    // Now go to each blog, look up the author and that blogs likes to the author
+    blogs.forEach((blog) => {
+        authorLikesObject[blog.author] += blog.likes
+    })
+
+    // Now find the object with highest "likes", get the name and amount of likes
+    const [mostLikesAuthor, mostLikes] = _.maxBy(Object.entries(authorLikesObject), author => author[1])
+
+    return {
+        author: mostLikesAuthor,
+        likes: mostLikes
+    }
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
     mostBlogs,
+    mostLikes,
 }
