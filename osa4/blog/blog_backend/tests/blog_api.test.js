@@ -16,11 +16,24 @@ beforeEach(async () => {
 })
 
 test('all blogs are returned and in correct JSON format', async () => {
-    await api
-    	.get('/api/blogs')
-			.expect(200)
-			.expect('Content-Type', /application\/json/)
+	await api
+		.get('/api/blogs')
+		.expect(200)
+		.expect('Content-Type', /application\/json/)
 })
+
+test('making sure id field is "id", not "_id"  ', async () => {
+	const blogs = await helper.blogsInDatabase()
+
+	console.log(blogs)
+
+	blogs.forEach(blog => {
+  	assert(blog.hasOwnProperty('id'));
+  	assert(!blog.hasOwnProperty('_id'));
+	})
+})
+
+
 
 after(async () => {
   await mongoose.connection.close()
