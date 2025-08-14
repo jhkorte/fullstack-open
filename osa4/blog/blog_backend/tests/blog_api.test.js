@@ -64,9 +64,30 @@ test('when "likes" field is empty, initialize it to 0', async () => {
 	const blogsAtEnd = await helper.blogsInDatabase()
 
 	const blogLikes = blogsAtEnd.map(b => b.likes)
-	console.log(blogLikes)
+
 	// If undefined is included in the blogLikes, then that means some of the blogs dont have a "likes" field.
 	assert(!blogLikes.includes(undefined))
+})
+
+test('if new blog doesnt have title or url, return 400 bad request', async () => {
+	const blogsAtStart = await helper.blogsInDatabase()
+
+	const newBlogNoTitle = {
+	  author: "Bloggerdude",
+      url: "https://myblogdoesnthaveatitle.com",
+	}
+
+	const newBlogNoUrl = {
+	  title: "The blog without a URL",
+	  author: "Bloggerdude",
+	}
+
+	await api.post('/api/blogs').send(newBlogNoTitle).expect(400)
+	await api.post('/api/blogs').send(newBlogNoUrl).expect(400)
+
+	const blogsAtEnd = await helper.blogsInDatabase()
+
+	assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
 })
 
 
