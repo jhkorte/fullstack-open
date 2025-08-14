@@ -35,10 +35,10 @@ test('blogs can be added, size increments correctly and new blog title is found'
 	const blogsAtStart = await helper.blogsInDatabase()
 
 	const newBlog = {
-    title: "This is a new blog",
-    author: "Bloggy McBlogger",
-    url: "https://example.com/",
-    likes: 123,
+	  title: "This is a new blog",
+	  author: "Bloggy McBlogger",
+      url: "https://example.com/",
+	  likes: 123,
 	}
 
 	await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
@@ -50,6 +50,24 @@ test('blogs can be added, size increments correctly and new blog title is found'
 	assert(blogTitles.includes('This is a new blog'))
 })
 
+test('when "likes" field is empty, initialize it to 0', async () => {
+	const blogsAtStart = await helper.blogsInDatabase()
+
+	const newBlog = {
+	  title: "This is a new blog with no likes",
+	  author: "Bloggy McBlogger",
+      url: "https://example.com/",
+	}
+
+	await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+
+	const blogsAtEnd = await helper.blogsInDatabase()
+
+	const blogLikes = blogsAtEnd.map(b => b.likes)
+	console.log(blogLikes)
+	// If undefined is included in the blogLikes, then that means some of the blogs dont have a "likes" field.
+	assert(!blogLikes.includes(undefined))
+})
 
 
 after(async () => {

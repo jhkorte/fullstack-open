@@ -7,19 +7,18 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body)
+blogsRouter.post('/', async (request, response) => {
+  const body = request.body
 
-  blog.save()
-  .then((result) => {
-    response.status(201).json(result)
-    logger.info('added a new blog', result)
-    Blog.find({}).then(blogs => {
-        logger.info('After adding the new blog:')
-        blogs.forEach(blog => logger.info(blog))
-        logger.info('-----------------------------------------')
-    })
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes || 0 // If doesn't have likes, init it to 0
   })
+
+  const savedBlog = await blog.save()
+  response.status(201).json(savedBlog)
 })
 
 
