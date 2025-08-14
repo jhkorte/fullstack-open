@@ -119,8 +119,26 @@ describe('when there are some initial blogs', async () => {
 
 			assert.strictEqual(blogsAtStart.length, blogsAtEnd.length +1)
 		})
+		
+	})
+	
+	
+	describe('when updating a blog', () => {
 
-	}) 
+		test('updating likes for a single blog', async () => {
+			const blogsAtStart = await helper.blogsInDatabase()
+			const blogToUpdate = blogsAtStart[0]
+
+			const response = await api.put(`/api/blogs/${blogToUpdate.id.toString()}`).send({ likes: 99999 }).expect(200).expect('Content-Type', /application\/json/)
+
+			const blogsAtEnd = await helper.blogsInDatabase()
+			const blogAfterUpdating = blogsAtEnd.find(b => b.id === blogToUpdate.id)
+			
+			assert.strict(blogAfterUpdating.likes, 99999)
+			assert.strict(blogsAtStart.length, blogsAtEnd.length)
+		})
+	})
+
 })
 
 
