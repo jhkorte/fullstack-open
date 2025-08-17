@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const { response } = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const logger = require('../utils/logger')
 
 blogsRouter.get('/', async (request, response) => {
@@ -11,11 +12,18 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
+  const user = await User.findById(body.userId)
+
+  if (!user) {
+    return response.status(400).json({ error: 'user id missing or invalid' })
+  }
+
   const blog = new Blog({
     title: body.title || "ERR_NO_TITLE", // If no title, make it this so it wont be saved to db
     author: body.author,
     url: body.url || "ERR_NO_URL",
-    likes: body.likes || 0 // If doesn't have likes, init it to 0
+    likes: body.likes || 0, // If doesn't have likes, init it to 0
+    user: user._id
   })
 
   if (blog.title === "ERR_NO_TITLE") return response.status(400).json({ error: 'title missing'})
