@@ -33,7 +33,7 @@ describe('when there is one user in the database', () => {
       await api.post('/api/users').send(newUser).expect(201).expect('Content-Type', /application\/json/)
 
       const usersAtEnd = await helper.usersInDatabase()
-      assert.strictEqual(usersAtEnd, usersAtStart + 1)
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
 
       const usernames = usersAtEnd.map(u => u.username)
       assert(usernames.includes(newUser.username))
