@@ -20,6 +20,24 @@ describe('when there is one user in the database', () => {
 
       await user.save()
     })
+
+    test('creation successful, using username not already in database', async () => {
+      const usersAtStart = await helper.usersInDatabase()
+
+      const newUser = {
+        username: 'elkku',
+        name: 'esa sallinen',
+        password: 'logistiikkainsinoori'
+      }
+
+      await api.post('/api/users').send(newUser).expect(201).expect('Content-Type', /application\/json/)
+
+      const usersAtEnd = await helper.usersInDatabase()
+      assert.strictEqual(usersAtEnd, usersAtStart + 1)
+
+      const usernames = usersAtEnd.map(u => u.username)
+      assert(usernames.includes(newUser.username))
+    })
 })
 
 
