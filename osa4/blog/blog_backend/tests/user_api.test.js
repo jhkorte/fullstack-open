@@ -7,7 +7,7 @@ const assert = require('node:assert')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const helper = require('./test_helper')
-
+const logger = require('../utils/logger')
 
 const api = supertest(app)
 
