@@ -21,7 +21,7 @@ describe('when there is one user in the database', () => {
       await user.save()
     })
 
-    test('creation successful, using username not already in database', async () => {
+    test('creation successful, using username not already in database, username and password long enough', async () => {
       const usersAtStart = await helper.usersInDatabase()
 
       const newUser = {
@@ -37,6 +37,24 @@ describe('when there is one user in the database', () => {
 
       const usernames = usersAtEnd.map(u => u.username)
       assert(usernames.includes(newUser.username))
+    })
+
+    test('creation UNsuccessful, using username not already in database, username and password NOT LONG ENOUGH', async () => {
+      const usersAtStart = await helper.usersInDatabase()
+
+      const newUser = {
+        username: 'elkku',
+        name: 'esa sallinen',
+        password: 'a'
+      }
+
+      await api.post('/api/users').send(newUser).expect(400)
+
+      const usersAtEnd = await helper.usersInDatabase()
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+
+      const usernames = usersAtEnd.map(u => u.username)
+      assert(!usernames.includes(newUser.username))
     })
 })
 
