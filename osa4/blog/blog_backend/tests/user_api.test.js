@@ -56,6 +56,24 @@ describe('when there is one user in the database', () => {
       const usernames = usersAtEnd.map(u => u.username)
       assert(!usernames.includes(newUser.username))
     })
+
+    test('creation UNsuccessful, using username already IN database', async () => {
+      const usersAtStart = await helper.usersInDatabase()
+
+      const newUser = {
+        username: 'root',
+        name: 'kimi räikkönen',
+        password: 'ferrari'
+      }
+
+      await api.post('/api/users').send(newUser).expect(400)
+
+      const usersAtEnd = await helper.usersInDatabase()
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+
+      const names = usersAtEnd.map(u => u.name)
+      assert(!names.includes(newUser.name))
+    })
 })
 
 
