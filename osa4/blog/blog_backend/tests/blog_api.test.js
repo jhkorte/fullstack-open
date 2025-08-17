@@ -46,7 +46,7 @@ describe('when there are some initial blogs', async () => {
 			const newBlog = {
 				title: "This is a new blog",
 				author: "Bloggy McBlogger",
-					url: "https://example.com/",
+				url: "https://example.com/",
 				likes: 123,
 			}
 
