@@ -22,6 +22,14 @@ const initialBlogs = [
   },
 ]
 
+const initialUsers = [
+  {
+    username:	"userTestFromREST",
+    name:	"Jaakko Hyvönen",
+    id:	"68a20d0fa8a4d5b6032fe3ea",
+  }
+]
+
 
 const blogsInDatabase = async () => {
     const blogs = await Blog.find({})
@@ -36,5 +44,5 @@ const usersInDatabase = async () => {
 
 
 module.exports = {
-    initialBlogs, blogsInDatabase, usersInDatabase
+    initialBlogs, initialUsers, blogsInDatabase, usersInDatabase
 }

@@ -1,20 +1,29 @@
 const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const app = require('../app')
 const assert = require('node:assert')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 const api = supertest(app)
 
 
-describe('when there are some initial blogs', async () => {
+describe('when there are some initial blogs', () => {
 
   beforeEach(async () => {
     await Blog.deleteMany({})
 
     await Blog.insertMany(helper.initialBlogs)
+
+	await User.deleteMany({})
+
+	const passwordHash = await bcrypt.hash('password123', 10)
+	const user = new User({ username: 'root', passwordHash })
+
+	await user.save()
   })
 
 
@@ -28,7 +37,6 @@ describe('when there are some initial blogs', async () => {
 
   test('making sure id field is "id", not "_id"  ', async () => {
 		const blogs = await helper.blogsInDatabase()
-
 		blogs.forEach(blog => {
 			assert(blog.hasOwnProperty('id'));
 			assert(!blog.hasOwnProperty('_id'));
@@ -38,16 +46,18 @@ describe('when there are some initial blogs', async () => {
 
 
 
-  describe('when adding new blog', async () => {
+  describe('when adding new blog', () => {
 
 		test('blogs can be added, size increments correctly and new blog title is found', async () => {
 			const blogsAtStart = await helper.blogsInDatabase()
+			const usersAtStart = await helper.usersInDatabase()
 
 			const newBlog = {
 				title: "This is a new blog",
 				author: "Bloggy McBlogger",
 				url: "https://example.com/",
 				likes: 123,
+				userId: usersAtStart[0].id
 			}
 
 			await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
@@ -62,14 +72,18 @@ describe('when there are some initial blogs', async () => {
 
 		test('when "likes" field is empty in new blog, initialize it to 0', async () => {
 			const blogsAtStart = await helper.blogsInDatabase()
+			const usersAtStart = await helper.usersInDatabase()
+			const userId = usersAtStart[0].id
 
 			const newBlog = {
 				title: "This is a new blog with no likes",
 				author: "Bloggy McBlogger",
 				url: "https://example.com/",
+				userId: usersAtStart[0].id
 			}
 
-			await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+			const response = await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+			console.log(response.body)
 
 			const blogsAtEnd = await helper.blogsInDatabase()
 
@@ -82,15 +96,18 @@ describe('when there are some initial blogs', async () => {
 
 		test('if new blog doesnt have title or url, return 400 bad request', async () => {
 			const blogsAtStart = await helper.blogsInDatabase()
+			const usersAtStart = await helper.usersInDatabase()
 
 			const newBlogNoTitle = {
 				author: "Bloggerdude",
-					url: "https://myblogdoesnthaveatitle.com",
+				url: "https://myblogdoesnthaveatitle.com",
+				userId: usersAtStart[0].id
 			}
 
 			const newBlogNoUrl = {
 				title: "The blog without a URL",
 				author: "Bloggerdude",
+				userId: usersAtStart[0].id
 			}
 
 			await api.post('/api/blogs').send(newBlogNoTitle).expect(400)
@@ -134,11 +151,77 @@ describe('when there are some initial blogs', async () => {
 			const blogsAtEnd = await helper.blogsInDatabase()
 			const blogAfterUpdating = blogsAtEnd.find(b => b.id === blogToUpdate.id)
 			
-			assert.strict(blogAfterUpdating.likes, 99999)
-			assert.strict(blogsAtStart.length, blogsAtEnd.length)
+			assert.strictEqual(blogAfterUpdating.likes, 99999)
+			assert.strictEqual(blogsAtStart.length, blogsAtEnd.length)
 		})
 	})
 
+
+})
+
+describe('when there is one user in the database', () => {
+  beforeEach(async () => {
+      await User.deleteMany({})
+
+      const passwordHash = await bcrypt.hash('password123', 10)
+      const user = new User({ username: 'root', passwordHash })
+
+      await user.save()
+    })
+
+    test('creation successful, using username not already in database, username and password long enough', async () => {
+      const usersAtStart = await helper.usersInDatabase()
+
+      const newUser = {
+        username: 'elkku',
+        name: 'esa sallinen',
+        password: 'logistiikkainsinoori'
+      }
+
+      await api.post('/api/users').send(newUser).expect(201).expect('Content-Type', /application\/json/)
+
+      const usersAtEnd = await helper.usersInDatabase()
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
+
+      const usernames = usersAtEnd.map(u => u.username)
+      assert(usernames.includes(newUser.username))
+    })
+
+    test('creation UNsuccessful, using username not already in database, username and password NOT LONG ENOUGH', async () => {
+      const usersAtStart = await helper.usersInDatabase()
+
+      const newUser = {
+        username: 'elkku',
+        name: 'esa sallinen',
+        password: 'a'
+      }
+
+      await api.post('/api/users').send(newUser).expect(400)
+
+      const usersAtEnd = await helper.usersInDatabase()
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+
+      const usernames = usersAtEnd.map(u => u.username)
+      assert(!usernames.includes(newUser.username))
+    })
+
+    test('creation UNsuccessful, using username already IN database', async () => {
+      const usersAtStart = await helper.usersInDatabase()
+
+      const newUser = {
+        username: 'root',
+        name: 'kimi räikkönen',
+        password: 'ferrari'
+      }
+
+      await api.post('/api/users').send(newUser).expect(400)
+
+      const usersAtEnd = await helper.usersInDatabase()
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+
+      const names = usersAtEnd.map(u => u.name)
+      assert(!names.includes(newUser.name))
+    })
 })
 
 
