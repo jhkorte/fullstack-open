@@ -18,12 +18,12 @@ describe('when there are some initial blogs', () => {
 
     await Blog.insertMany(helper.initialBlogs)
 
-	await User.deleteMany({})
+    await User.deleteMany({})
 
-	const passwordHash = await bcrypt.hash('password123', 10)
-	const user = new User({ username: 'root', passwordHash })
+    const passwordHash = await bcrypt.hash('password123', 10)
+    const user = new User({ username: 'root', passwordHash })
 
-	await user.save()
+    await user.save()
   })
 
 
@@ -90,7 +90,7 @@ describe('when there are some initial blogs', () => {
 			}
 
 			const response = await api.post('/api/blogs').set('Authorization', `Bearer ${loginToken}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
-			console.log(response.body)
+			//console.log(response.body)
 
 			const blogsAtEnd = await helper.blogsInDatabase()
 
@@ -134,19 +134,38 @@ describe('when there are some initial blogs', () => {
 
 	describe('when deleting a blog', () => {
 
-		test('deleting a single blog', async () => {
-			const blogsAtStart = await helper.blogsInDatabase()
-			const blogToDelete = blogsAtStart[0]
+    test('deleting a blog after adding it first', async () => {
+      // Add the blog
+      const blogsAtStart = await helper.blogsInDatabase()
+			const usersAtStart = await helper.usersInDatabase()
+      const userThatAddsBlog = usersAtStart[0] //this is the user with name 'root', created in beforeEach
+      
+      const loginRes = await api.post('/api/login').send({username: 'root', password: 'password123'}).expect(200)
+      const loginToken = loginRes.body.token
 
-			await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+			const newBlog = {
+				title: "This is a new blog",
+				author: "Bloggy McBlogger",
+				url: "https://example.com/",
+				likes: 123,
+				userId: userThatAddsBlog.id
+			}
+
+			await api.post('/api/blogs').set('Authorization', `Bearer ${loginToken}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
 
 			const blogsAtEnd = await helper.blogsInDatabase()
+			assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
 
-			const blogsTitles = blogsAtEnd.map(b => b.title)
-			assert(!blogsTitles.includes(blogToDelete.title))
+			const blogTitles = blogsAtEnd.map(b => b.title)
+			assert(blogTitles.includes('This is a new blog'))
+      // Done adding the blog
 
-			assert.strictEqual(blogsAtStart.length, blogsAtEnd.length +1)
-		})
+      // Deleting the blog
+      const blogsAfterAdding = await helper.blogsInDatabase()
+      const blogToDelete = blogsAfterAdding[blogsAfterAdding.length -1]
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).set('Authorization', `Bearer ${loginToken}`).expect(204) // Expect 204 no content
+    })
 		
 	})
 	
