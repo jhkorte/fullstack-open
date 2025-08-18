@@ -6,15 +6,6 @@ const logger = require('../utils/logger')
 const jwt = require('jsonwebtoken')
 
 
-const getTokenFrom = req => {
-  const auth = req.get('authorization')
-  if (auth && auth.startsWith('Bearer ')) {
-    return auth.replace('Bearer ', '')
-  }
-  return null
-}
-
-
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
@@ -23,7 +14,7 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'invalid token' })
   }
