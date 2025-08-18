@@ -30,8 +30,13 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
+const tokenExtractor = () => {
+
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
+  tokenExtractor,
 }
