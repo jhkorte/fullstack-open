@@ -22,6 +22,9 @@ loginRouter.post('/', async (request, response) => {
     id: user._id,
   }
 
+  console.log("REAL user._id", user._id)
+  console.log("REAL user._id.toString()", user._id.toString())
+  console.log("REAL user.id", user.id)  
   const token = jwt.sign(userForToken, process.env.SECRET)
 
   response
