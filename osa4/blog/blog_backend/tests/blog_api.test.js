@@ -222,6 +222,24 @@ describe('when there is one user in the database', () => {
       const names = usersAtEnd.map(u => u.name)
       assert(!names.includes(newUser.name))
     })
+
+	test('logging in with valid credentials returns 200 OK', async () => {
+		const userForLogin = {
+			username: 'root',
+			password: 'password123'
+		}
+
+		await api.post('/api/login').send(userForLogin).expect(200)
+	})
+
+	test('logging in with invalid credentials returns 401 Unauthorized', async () => {
+		const userForLogin = {
+			username: 'roott',
+			password: 'password123'
+		}
+
+		await api.post('/api/login').send(userForLogin).expect(401)
+	})
 })
 
 
