@@ -46,21 +46,25 @@ describe('when there are some initial blogs', () => {
 
 
 
-  describe('when adding new blog', () => {
+  describe('when adding new blog, with jwt tokens', () => {
 
 		test('blogs can be added, size increments correctly and new blog title is found', async () => {
 			const blogsAtStart = await helper.blogsInDatabase()
 			const usersAtStart = await helper.usersInDatabase()
+      const userThatAddsBlog = usersAtStart[0] //this is the user with name 'root', created in beforeEach
+      
+      const loginRes = await api.post('/api/login').send({username: 'root', password: 'password123'}).expect(200)
+      const loginToken = loginRes.body.token
 
 			const newBlog = {
 				title: "This is a new blog",
 				author: "Bloggy McBlogger",
 				url: "https://example.com/",
 				likes: 123,
-				userId: usersAtStart[0].id
+				userId: userThatAddsBlog.id
 			}
 
-			await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+			await api.post('/api/blogs').set('Authorization', `Bearer ${loginToken}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
 
 			const blogsAtEnd = await helper.blogsInDatabase()
 			assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
@@ -73,16 +77,19 @@ describe('when there are some initial blogs', () => {
 		test('when "likes" field is empty in new blog, initialize it to 0', async () => {
 			const blogsAtStart = await helper.blogsInDatabase()
 			const usersAtStart = await helper.usersInDatabase()
-			const userId = usersAtStart[0].id
+			const userThatAddsBlog = usersAtStart[0] //this is the user with name 'root', created in beforeEach
+
+      const loginRes = await api.post('/api/login').send({username: 'root', password: 'password123'}).expect(200)
+      const loginToken = loginRes.body.token
 
 			const newBlog = {
 				title: "This is a new blog with no likes",
 				author: "Bloggy McBlogger",
 				url: "https://example.com/",
-				userId: usersAtStart[0].id
+				userId: userThatAddsBlog.id
 			}
 
-			const response = await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+			const response = await api.post('/api/blogs').set('Authorization', `Bearer ${loginToken}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
 			console.log(response.body)
 
 			const blogsAtEnd = await helper.blogsInDatabase()
@@ -97,21 +104,25 @@ describe('when there are some initial blogs', () => {
 		test('if new blog doesnt have title or url, return 400 bad request', async () => {
 			const blogsAtStart = await helper.blogsInDatabase()
 			const usersAtStart = await helper.usersInDatabase()
+      const userThatAddsBlog = usersAtStart[0] //this is the user with name 'root', created in beforeEach
+
+      const loginRes = await api.post('/api/login').send({username: 'root', password: 'password123'}).expect(200)
+      const loginToken = loginRes.body.token
 
 			const newBlogNoTitle = {
 				author: "Bloggerdude",
 				url: "https://myblogdoesnthaveatitle.com",
-				userId: usersAtStart[0].id
+				userId: userThatAddsBlog.id
 			}
 
 			const newBlogNoUrl = {
 				title: "The blog without a URL",
 				author: "Bloggerdude",
-				userId: usersAtStart[0].id
+				userId: userThatAddsBlog.id
 			}
 
-			await api.post('/api/blogs').send(newBlogNoTitle).expect(400)
-			await api.post('/api/blogs').send(newBlogNoUrl).expect(400)
+			await api.post('/api/blogs').set('Authorization', `Bearer ${loginToken}`).send(newBlogNoTitle).expect(400)
+			await api.post('/api/blogs').set('Authorization', `Bearer ${loginToken}`).send(newBlogNoUrl).expect(400)
 
 			const blogsAtEnd = await helper.blogsInDatabase()
 
