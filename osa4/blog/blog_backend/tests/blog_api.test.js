@@ -59,6 +59,8 @@ describe('when there are some initial blogs', () => {
       
       console.log('this is the login token from test',loginTokenFromBeforeEach)
 
+      const loginToken = loginTokenFromBeforeEach
+
 			const newBlog = {
 				title: "This is a new blog",
 				author: "Bloggy McBlogger",
@@ -66,7 +68,7 @@ describe('when there are some initial blogs', () => {
 				likes: 123,
 			}
       
-			await api.post('/api/blogs').set('Authorization', `Bearer ${loginTokenFromBeforeEach}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+			await api.post('/api/blogs').set('Authorization', `Bearer ${loginToken}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
 
 			const blogsAtEnd = await helper.blogsInDatabase()
 			assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
@@ -109,7 +111,7 @@ describe('when there are some initial blogs', () => {
       const userThatAddsBlog = usersAtStart[0] //this is the user with name 'root', created in beforeEach
 
       const loginRes = await api.post('/api/login').send({username: 'root', password: 'password123'}).expect(200)
-      const loginToken = loginRes.body.token
+      const loginToken = loginTokenFromBeforeEach
 
 			const newBlogNoTitle = {
 				author: "Bloggerdude",
@@ -165,7 +167,7 @@ describe('when there are some initial blogs', () => {
       const userThatAddsBlog = usersAtStart[0] //this is the user with name 'root', created in beforeEach
       
       const loginRes = await api.post('/api/login').send({username: 'root', password: 'password123'}).expect(200)
-      const loginToken = loginRes.body.token
+      const loginToken = loginTokenFromBeforeEach
 
 			const newBlog = {
 				title: "This is a new blog",
@@ -189,6 +191,10 @@ describe('when there are some initial blogs', () => {
       const blogToDelete = blogsAfterAdding[blogsAfterAdding.length -1]
 
       await api.delete(`/api/blogs/${blogToDelete.id}`).set('Authorization', `Bearer ${loginToken}`).expect(204) // Expect 204 no content
+
+      const blogsAfterDeleting = await helper.blogsInDatabase()
+
+      assert.strictEqual(blogsAtStart.length, blogsAfterDeleting.length)
     })
 		
 	})
