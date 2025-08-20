@@ -4,6 +4,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const logger = require('../utils/logger')
 const jwt = require('jsonwebtoken')
+const { userExtractor } = require('../utils/middleware')
 
 
 blogsRouter.get('/', async (request, response) => {
@@ -11,9 +12,11 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
+  console.log('-----------------------------------------')
   const body = request.body
 
+  /*
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'invalid token' })
@@ -23,10 +26,15 @@ blogsRouter.post('/', async (request, response) => {
   /*
   console.log('all users', users)
   console.log('this is the decode token', decodedToken)
-  */
+  
 
   const user = await User.findById(decodedToken.id)
   //console.log("found this user with id from decoded token", user)
+  */
+
+  console.log('request.user:', request.user)
+  const user = request.user
+
 
   
   if (!user) {
@@ -53,15 +61,12 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   const blogToDelete = await Blog.findById(request.params.id)
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'invalid token' })
-  }
+  const user = request.user
 
-  if (!(blogToDelete.user.toString() === decodedToken.id)) {
+  if (!(blogToDelete.user.toString() === user.id)) {
     return response.status(401).json({ error: 'invalid user for this blog' })
   }
 
