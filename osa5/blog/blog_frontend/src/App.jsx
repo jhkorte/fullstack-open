@@ -30,7 +30,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+			console.log('login success!')
     } catch (exception) {
+			console.log('login failed')
       setErrorMessage('no user found with these credentials')
       setTimeout(() => {
         setErrorMessage(null)
@@ -38,34 +40,64 @@ const App = () => {
     }
   }
 
+	const addBlog = async (e) => {
+		e.preventDefault()
+		
+	}
+
+	const loginForm = () => (
+		<div>
+			<h2>Login</h2>
+				<form onSubmit={handleLogin}>
+					<div>
+						username
+							<input
+								type="text"
+								value={username}
+								name="Username"
+								onChange={({target}) => setUsername(target.value)}
+							/>
+					</div>
+					<div>
+						password
+							<input
+								type="text"
+								value={password}
+								name="Password"
+								onChange={({target}) => setPassword(target.value)}
+							/>
+					</div>
+					<button type="submit">login</button>
+				</form>
+		</div>
+		
+	)
+
+  const blogForm = async () => (
+    <form onSubmit={addBlog}>
+			<input 
+				value={newBlog}
+				onChange={handleBlogChange}
+			/>
+			<button type="submit">save</button>
+		</form>
+	)
+
   
 
 
   return (
     <div>
+			<h1>The Bloglist</h1>
+			
       <Notification message={errorMessage} />
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-            <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({target}) => setUsername(target.value)}
-            />
-        </div>
-        <div>
-          password
-            <input
-            type="text"
-            value={password}
-            name="Password"
-            onChange={({target}) => setPassword(target.value)}
-            />
-        </div>
-        <button type="submit">login</button>
-      </form>
+      
+      {!user && loginForm()}
+			{user && <div>
+				<p> {user.name} is logged in </p>
+					{blogForm()}
+				</div>
+			}
 
       <h2>blogs</h2>
       {blogs.map(blog =>
