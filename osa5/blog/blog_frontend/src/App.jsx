@@ -17,9 +17,18 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
-  }, [])
+  }, [blogs])
 
+	useEffect(() => {
+		const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+		if (loggedUserJSON) {
+			const user = JSON.parse(loggedUserJSON)
+			setUser(user)
+			blogService.setToken(user.token)
+		}
+	}, [])
 
+	
   const handleLogin = async (e) => {
     e.preventDefault()
     console.log('logging in from frontend with', username, password)
@@ -28,6 +37,8 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+
+			window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
 
 			blogService.setToken(user.token)
       setUser(user)
@@ -43,10 +54,6 @@ const App = () => {
     }
   }
 
-	const handleBlogChange = async (e) => {
-		setNewBlog({...newBlog, [e.target.name]: e.target.value})
-	}
-
 	const addBlog = async (e) => {
 		e.preventDefault()
 		console.log('submitting new blog with', newBlog)
@@ -55,11 +62,18 @@ const App = () => {
 			const blog = await blogService.create(newBlog)
 			console.log('created blog:', blog)
 			setNewBlog({ title: '', author: '', url: '', })
+			setErrorMessage('created new blog successfully!')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
 		} catch (exception) {
 			console.log('failed to create blog. exception:', exception)
+			setErrorMessage('failed to create blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
 		}
 	}
-
 
 	const loginForm = () => (
 		<div>
@@ -83,7 +97,7 @@ const App = () => {
 								onChange={({target}) => setPassword(target.value)}
 							/>
 					</div>
-					<button type="submit">login</button>
+					<button type="submit">Login</button>
 				</form>
 		</div>
 	)
@@ -91,7 +105,6 @@ const App = () => {
   const blogForm = () => (
 		<div>
 			<h2>Create new Blog</h2>
-
 			<form onSubmit={addBlog}>
 					<div>
 						title
@@ -124,17 +137,26 @@ const App = () => {
 				</form>
 		</div>
 	)
+	
+	const logOut = () => (
+		<div>
+			<button onClick={() => {
+				window.localStorage.clear()
+				window.location.reload()
+			}}>Log out</button>
+		</div>
+	)
 
 
   return (
     <div>
+			<Notification message={errorMessage} />
 			<h1>The Bloglist</h1>
-			
-      <Notification message={errorMessage} />
       
       {!user && loginForm()}
 			{user && <div>
 				<p> {user.name} is logged in </p>
+					{logOut()}
 					{blogForm()}
 				</div>
 			}
