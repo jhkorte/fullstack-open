@@ -3,9 +3,11 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogForm from './components/BlogForm'
 
 
 const App = () => {
+	const [blogFormVisible, setBlogFormVisible] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
 	const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '', })
@@ -45,6 +47,7 @@ const App = () => {
       setUsername('')
       setPassword('')
 			console.log('login success!')
+    // eslint-disable-next-line no-unused-vars
     } catch (exception) {
 			console.log('login failed')
       setErrorMessage('no user found with these credentials')
@@ -102,6 +105,32 @@ const App = () => {
 		</div>
 	)
 
+	const blogForm = () => {
+		const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+		const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
+
+		return (
+			<div>
+				<div style={hideWhenVisible}>
+					<button onClick={() => setBlogFormVisible(true)}>Create a blog yo</button>
+				</div>
+				<div style={showWhenVisible}>
+					<BlogForm
+						addBlog = {addBlog}
+						handleTitleChange = {({target}) => setNewBlog({...newBlog, title:target.value})}
+						handleAuthorChange = {({target}) => setNewBlog({...newBlog, author:target.value})}
+						handleUrlChange = {({target}) => setNewBlog({...newBlog, url:target.value})}
+						newBlogTitle = {newBlog.title}
+						newBlogAuthor = {newBlog.author}
+						newBlogUrl = {newBlog.url}
+					/>
+					<button onClick={() => setBlogFormVisible(false)}>Cancel blog yo</button>
+				</div>
+			</div>
+		)
+	}
+
+	/*
   const blogForm = () => (
 		<div>
 			<h2>Create new Blog</h2>
@@ -137,6 +166,7 @@ const App = () => {
 				</form>
 		</div>
 	)
+		*/
 	
 	const logOut = () => (
 		<div>
@@ -155,8 +185,8 @@ const App = () => {
       
       {!user && loginForm()}
 			{user && <div>
-				<p> {user.name} is logged in </p>
-					{logOut()}
+				<p> {user.name} is logged in {logOut()} </p>
+					
 					{blogForm()}
 				</div>
 			}
