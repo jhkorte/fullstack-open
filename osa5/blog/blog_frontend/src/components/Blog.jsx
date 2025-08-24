@@ -1,6 +1,13 @@
 import { useState } from 'react'
 
 const Blog = ({ blog }) => {
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 0,
+    marginBottom: 7
+  }
   const [showAllInfo, setShowAllInfo] = useState(false)
 
   const infoMinimum = { display: showAllInfo ? 'none' : '' }
@@ -11,16 +18,15 @@ const Blog = ({ blog }) => {
   }
 
   return (
-  <div>
+  <div style={blogStyle}>
     <div style={infoMinimum}>
       {blog.title} - {blog.author} - <button onClick={toggleShowAllInfo}>Show more</button>
     </div>
     <div style={infoAll}>
-      {blog.title} <br />
-      {blog.author} <br />
-      {blog.url} <br />
-      {blog.likes} <br /> 
-      <button onClick={toggleShowAllInfo}>Hide</button>
+      Title: {blog.title} - <button onClick={toggleShowAllInfo}>Hide</button><br />
+      Author: {blog.author} <br />
+      URL: {blog.url} <br />
+      Likes: {blog.likes} <button>Like!</button> <br /> 
     </div>
   </div>  
 )}

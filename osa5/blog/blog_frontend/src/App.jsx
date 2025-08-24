@@ -62,28 +62,6 @@ const App = () => {
 		const blog = await blogService.create(blogObject)
 		setBlogs(blogs.concat(blog))
 	}
-/*
-	const addBlogOld = async (e) => {
-		e.preventDefault()
-		console.log('submitting new blog with', newBlog)
-
-		try {
-			const blog = await blogService.create(newBlog)
-			console.log('created blog:', blog)
-			setNewBlog({ title: '', author: '', url: '', })
-			setErrorMessage('created new blog successfully!')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-		} catch (exception) {
-			console.log('failed to create blog. exception:', exception)
-			setErrorMessage('failed to create blog')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-		}
-	}
-		*/
 
 	const loginForm = () => (
 		<div>
@@ -112,33 +90,6 @@ const App = () => {
 		</div>
 	)
 
-	/*
-	const blogForm = () => {
-		const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
-		const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
-
-		return (
-			<div>
-				<div style={hideWhenVisible}>
-					<button onClick={() => setBlogFormVisible(true)}>Create a blog yo</button>
-				</div>
-				<div style={showWhenVisible}>
-					<BlogForm
-						addBlog = {addBlog}
-						handleTitleChange = {({target}) => setNewBlog({...newBlog, title:target.value})}
-						handleAuthorChange = {({target}) => setNewBlog({...newBlog, author:target.value})}
-						handleUrlChange = {({target}) => setNewBlog({...newBlog, url:target.value})}
-						newBlogTitle = {newBlog.title}
-						newBlogAuthor = {newBlog.author}
-						newBlogUrl = {newBlog.url}
-					/>
-					<button onClick={() => setBlogFormVisible(false)}>Cancel blog yo</button>
-				</div>
-			</div>
-		)
-	}
-	*/
-
 	const logOut = () => (
 		<div>
 			<button onClick={() => {
@@ -157,7 +108,7 @@ const App = () => {
       {!user && loginForm()}
 			{user && <div>
 				<div> {user.name} is logged in {logOut()} </div>
-					<Togglable buttonLabel="Blogform from app.jsx" ref={blogFormRef}>
+					<Togglable buttonLabel="Add a new blog" ref={blogFormRef}>
 						<BlogForm createBlog={addBlog} />
 					</Togglable>
 				</div>
