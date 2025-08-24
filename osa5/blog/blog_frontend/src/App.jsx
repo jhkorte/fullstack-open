@@ -19,7 +19,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
-  }, [blogs])
+  }, [])
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -58,6 +58,7 @@ const App = () => {
   }
 
 	const addBlog = async (blogObject) => {
+		blogFormRef.current.toggleVisibility()
 		const blog = await blogService.create(blogObject)
 		setBlogs(blogs.concat(blog))
 	}
@@ -155,8 +156,7 @@ const App = () => {
       
       {!user && loginForm()}
 			{user && <div>
-				<p> {user.name} is logged in {logOut()} </p>
-					
+				<div> {user.name} is logged in {logOut()} </div>
 					<Togglable buttonLabel="Blogform from app.jsx" ref={blogFormRef}>
 						<BlogForm createBlog={addBlog} />
 					</Togglable>
