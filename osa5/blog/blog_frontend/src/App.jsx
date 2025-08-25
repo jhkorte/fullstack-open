@@ -63,6 +63,14 @@ const App = () => {
 		setBlogs(blogs.concat(blog))
 	}
 
+	const updateBlog = async (blogObject) => {
+		console.log('liking from app.jsx with blog id',blogObject.id)
+		const updatedBlog = {...blogObject, likes: blogObject.likes +1}
+		const returnedBlog = await blogService.update(updatedBlog.id, updatedBlog)
+		console.log('returnedblog:',returnedBlog)
+		setBlogs(blogs.map(b => b.id !== blogObject.id ? b : returnedBlog))
+	}
+
 	const loginForm = () => (
 		<div>
 			<h2>Login</h2>
@@ -116,7 +124,7 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
     </div>
   )
