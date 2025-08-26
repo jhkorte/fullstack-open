@@ -79,9 +79,11 @@ const App = () => {
 
 	const deleteBlog = async (blogObject) => {
 		const blogToRemove = blogObject
-		console.log('the deletion isnt working yet!', blogToRemove.id)
+		console.log('blogtoremove:',blogToRemove)
+		console.log('attempting to delete blog of id:', blogToRemove.id)
 		const res = await blogService.remove(blogToRemove.id)
 		console.log(res)
+		setBlogs(blogs.filter(b => b.id !== blogToRemove.id).sort(sortBlogsByLikes))
 	}
 
 	const loginForm = () => (
