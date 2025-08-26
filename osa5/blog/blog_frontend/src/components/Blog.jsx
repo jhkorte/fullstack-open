@@ -26,6 +26,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentlyLoggedUser }) => {
   const blogDelete = async (blogToBeDeleted) => {
     const deleteConfirmation = window.confirm(`Delete "${blogToBeDeleted.title}" by ${blogToBeDeleted.author}?`)
     if (!deleteConfirmation) return
+    console.log('from Blog/blogDelete, blogToBeDeleted', blogToBeDeleted)
     console.log('deleting blog with id', blogToBeDeleted.id)
     deleteBlog(blogToBeDeleted)
   }

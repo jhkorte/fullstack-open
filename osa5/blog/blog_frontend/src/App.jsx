@@ -65,8 +65,17 @@ const App = () => {
 
 	const addBlog = async (blogObject) => {
 		blogFormRef.current.toggleVisibility()
-		const blog = await blogService.create(blogObject)
-		setBlogs(blogs.concat(blog))
+		console.log('user from App/addBlog: ',user)
+		console.log('this is the blog before ADDING', blogObject)
+		const userForBlog = user
+		console.log('userforblog',userForBlog)
+		const addedBlog = {...blogObject, user: userForBlog}
+		console.log(addedBlog)
+		const returnedBlog = await blogService.create(addedBlog)
+		console.log(returnedBlog)
+		returnedBlog.user = userForBlog
+		
+		setBlogs(blogs.concat(returnedBlog))
 	}
 
 	const updateBlog = async (blogObject) => {
