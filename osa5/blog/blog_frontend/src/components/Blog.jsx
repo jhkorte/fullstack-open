@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -23,6 +23,11 @@ const Blog = ({ blog, updateBlog }) => {
     updateBlog(blogToBeUpdated)
   }
 
+  const blogDelete = async (blogToBeDeleted) => {
+    console.log('deleting blog with id', blogToBeDeleted.id)
+    deleteBlog(blogToBeDeleted)
+  }
+
   return (
   <div style={blogStyle}>
     <div style={infoMinimum}>
@@ -33,6 +38,7 @@ const Blog = ({ blog, updateBlog }) => {
       Author: {blog.author} <br />
       URL: {blog.url} <br />
       Likes: {blog.likes} <button onClick={() => likeIncrement(blog)}>Like!</button> <br /> 
+      <button onClick={() => blogDelete(blog)}>Delete</button>
     </div>
   </div>  
 )}

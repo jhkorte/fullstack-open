@@ -77,6 +77,13 @@ const App = () => {
 		setBlogs(blogs.map(b => b.id !== blogObject.id ? b : returnedBlog).sort(sortBlogsByLikes))
 	}
 
+	const deleteBlog = async (blogObject) => {
+		const blogToRemove = blogObject
+		console.log('the deletion isnt working yet!', blogToRemove.id)
+		const res = await blogService.remove(blogToRemove.id)
+		console.log(res)
+	}
+
 	const loginForm = () => (
 		<div>
 			<h2>Login</h2>
@@ -130,7 +137,7 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
       )}
     </div>
   )
