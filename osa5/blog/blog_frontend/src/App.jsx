@@ -74,7 +74,7 @@ const App = () => {
 		const updatedBlog = {...blogObject, likes: blogObject.likes +1}
 		const returnedBlog = await blogService.update(updatedBlog.id, updatedBlog)
 		console.log('returnedblog:',returnedBlog)
-		setBlogs(blogs.map(b => b.id !== blogObject.id ? b : returnedBlog))
+		setBlogs(blogs.map(b => b.id !== blogObject.id ? b : returnedBlog).sort(sortBlogsByLikes))
 	}
 
 	const loginForm = () => (
