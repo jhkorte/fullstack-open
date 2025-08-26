@@ -17,9 +17,15 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort(sortBlogsByLikes) )
     )  
   }, [])
+
+	const sortBlogsByLikes = (blog1, blog2) => {
+		if (blog1.likes > blog2.likes) return -1
+		else if (blog1.likes < blog2.likes) return 1
+		return 0
+	}
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
