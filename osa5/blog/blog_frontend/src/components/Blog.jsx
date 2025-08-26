@@ -19,14 +19,6 @@ const Blog = ({ blog, updateBlog }) => {
   }
 
   const likeIncrement = async (blogToBeUpdated) => {
-    /*
-    console.log('liking blog with id', blog.id)
-    
-    const updatedBlog = {...blog, likes: blog.likes +1}
-    const res = await blogService.update(blog.id, updatedBlog)
-    
-    console.log(res)
-    */
     console.log('updating from blog.jsx')
     updateBlog(blogToBeUpdated)
   }
