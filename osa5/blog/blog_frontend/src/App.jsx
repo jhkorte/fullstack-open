@@ -71,10 +71,17 @@ const App = () => {
 
 	const updateBlog = async (blogObject) => {
 		console.log('liking from app.jsx with blog id',blogObject.id)
-		const updatedBlog = {...blogObject, likes: blogObject.likes +1}
+		console.log('this is the blog before adding like', blogObject)
+		console.log(blogObject.user)
+		const userForBlog = blogObject.user
+		console.log(userForBlog)
+		const updatedBlog = {...blogObject, likes: blogObject.likes +1, user: userForBlog}
 		const returnedBlog = await blogService.update(updatedBlog.id, updatedBlog)
+		returnedBlog.user = userForBlog
 		console.log('returnedblog:',returnedBlog)
 		setBlogs(blogs.map(b => b.id !== blogObject.id ? b : returnedBlog).sort(sortBlogsByLikes))
+		console.log('THIS IS AFTER ADDING LIKE', returnedBlog)
+		console.log(returnedBlog.user)
 	}
 
 	const deleteBlog = async (blogObject) => {
@@ -139,7 +146,7 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} currentlyLoggedUser={user}/>
       )}
     </div>
   )
