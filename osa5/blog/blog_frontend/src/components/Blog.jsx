@@ -24,6 +24,8 @@ const Blog = ({ blog, updateBlog, deleteBlog, }) => {
   }
 
   const blogDelete = async (blogToBeDeleted) => {
+    const deleteConfirmation = window.confirm(`Delete "${blogToBeDeleted.title}" by ${blogToBeDeleted.author}?`)
+    if (!deleteConfirmation) return
     console.log('deleting blog with id', blogToBeDeleted.id)
     deleteBlog(blogToBeDeleted)
   }
@@ -34,7 +36,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, }) => {
       {blog.title} - {blog.author} - <button onClick={toggleShowAllInfo}>Show more</button>
     </div>
     <div style={infoAll}>
-      Title: {blog.title} - <button onClick={toggleShowAllInfo}>Hide</button><br />
+      Title: {blog.title} <button onClick={toggleShowAllInfo}>Hide</button><br />
       Author: {blog.author} <br />
       URL: {blog.url} <br />
       Likes: {blog.likes} <button onClick={() => likeIncrement(blog)}>Like!</button> <br /> 
