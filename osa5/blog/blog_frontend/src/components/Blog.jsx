@@ -40,6 +40,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, }) => {
       Author: {blog.author} <br />
       URL: {blog.url} <br />
       Likes: {blog.likes} <button onClick={() => likeIncrement(blog)}>Like!</button> <br /> 
+      User that added this blog: {blog.user.username} <br />
       <button onClick={() => blogDelete(blog)}>Delete</button>
     </div>
   </div>  
