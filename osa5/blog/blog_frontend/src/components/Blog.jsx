@@ -32,22 +32,22 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentlyLoggedUser }) => {
   }
 
   return (
-  <div style={blogStyle}>
-    <div style={infoMinimum}>
-      {blog.title} - {blog.author} - <button onClick={toggleShowAllInfo}>Show more</button>
-    </div>
-    <div style={infoAll}>
+    <div style={blogStyle}>
+      <div style={infoMinimum}>
+        {blog.title} - {blog.author} - <button onClick={toggleShowAllInfo}>Show more</button>
+      </div>
+      <div style={infoAll}>
       Title: {blog.title} <button onClick={toggleShowAllInfo}>Hide</button><br />
       Author: {blog.author} <br />
       URL: {blog.url} <br />
-      Likes: {blog.likes} <button onClick={() => likeIncrement(blog)}>Like!</button> <br /> 
+      Likes: {blog.likes} <button onClick={() => likeIncrement(blog)}>Like!</button> <br />
       User that added this blog: {blog.user.username} <br />
-      {currentlyLoggedUser.username === blog.user.username && (
-        <button onClick={() => blogDelete(blog)}>Delete</button>
-      )}
+        {currentlyLoggedUser.username === blog.user.username && (
+          <button onClick={() => blogDelete(blog)}>Delete</button>
+        )}
+      </div>
     </div>
-  </div>  
-)}
+  )}
 // ^^^^ That works as it should ^^^^, since usernames are forced to be unique, as per the backend configuration
 
 export default Blog
