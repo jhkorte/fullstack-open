@@ -60,6 +60,23 @@ describe('Blog app', () => {
 
       await expect(page.getByText('Blog added from test - Tester -')).toBeVisible()
     })
+
+    test('blog can be liked when logged in', async ({ page }) => {
+      // Adding a blog first
+      await page.getByRole('button', { name: 'Add a new blog' }).click()
+      await page.getByLabel('Title').fill('Blog added from test')
+      await page.getByLabel('Author').fill('Tester')
+      await page.getByLabel('URL').fill('test.com')
+      await page.getByRole('button', { name: 'Submit' }).click()
+
+      // Testing like function
+      await expect(page.getByText('Blog added from test - Tester -')).toBeVisible()
+      await page.getByRole('button', { name: 'Show more' }).click()
+      await page.getByRole('button', { name: 'Like!' }).click()
+      await page.getByText('Likes: 1').waitFor()
+      await page.getByRole('button', { name: 'Like!' }).click()
+      await page.getByText('Likes: 2').waitFor()
+    })
   })
 
 })
