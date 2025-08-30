@@ -1,18 +1,23 @@
-const { test, expect } = require('@playwright/test')
+const { test, expect, describe, beforeEach } = require('@playwright/test')
 
 describe('Blog app', () => {
-  test('front page can be opened', async ({ page }) => {
+  beforeEach(async ({ page }) => {
     await page.goto('http://localhost:5173')
+  })
 
-    //TODO
+  test('front page can be opened', async ({ page }) => {
     const locator = page.getByText('The Bloglist')
     await expect(locator).toBeVisible()
   })
 
-  test('user can log in', async ({ page }) => {
+  test('successful login is successful', async ({ page }) => {
     await page.goto('http://localhost:5173')
 
-    await page.getByRole('button', {name: 'Username'}).click()
+    await page.getByLabel('Username').fill('jakessu')
+    await page.getByLabel('Password').fill('mieoonturust')
+    await page.getByRole('button', { name: 'Login' }).click()
+
+    await expect(page.getByText('Jaakko Hyvönen is logged in')).toBeVisible()
   })
 
 })
