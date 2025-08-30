@@ -137,6 +137,58 @@ describe('Blog app', () => {
       await expect(page.getByRole('button', { name: 'Delete' })).toBeHidden()
     })
 
+    test('blogs are sorted in order of likes', async ({ page }) => {
+      // Add two blogs
+      await page.getByRole('button', { name: 'Add a new blog' }).click()
+      await page.getByLabel('Title').fill('First blog')
+      await page.getByLabel('Author').fill('jakessu')
+      await page.getByLabel('URL').fill('test.com')
+      await page.getByRole('button', { name: 'Submit' }).click()
+
+      await page.getByText('First blog - jakessu -').waitFor()
+
+      await page.getByRole('button', { name: 'Add a new blog' }).click()
+      await page.getByLabel('Title').fill('Second blog')
+      await page.getByLabel('Author').fill('jakessu')
+      await page.getByLabel('URL').fill('test.com')
+      await page.getByRole('button', { name: 'Submit' }).click()
+
+      await page.getByText('Second blog - jakessu -').waitFor()
+      // Two blogs have now been added
+
+      // Check that the blogs exist
+      await expect(page.getByText('First blog - jakessu -')).toBeVisible()
+      await expect(page.getByText('Second blog - jakessu -')).toBeVisible()
+
+      // Check that the first blog is 'First blog' and second blog is 'Second blog'
+      let allBlogs = await page.locator('.blog').allTextContents()
+      expect(allBlogs[0]).toContain('First blog')
+      expect(allBlogs[1]).toContain('Second blog')
+      console.log('allblogs, first time:', allBlogs)
+
+      // Like the first blog once
+      await page.locator('text=First blog - jakessu -').locator('button:has-text("Show more")').click()
+      await page.locator('text=Title: First blog').locator('button:has-text("Like!")').click()
+      await page.getByText('Likes: 1').waitFor()
+
+      // Like the second blog three times
+      await page.locator('text=Second blog - jakessu -').locator('button:has-text("Show more")').click()
+      await page.locator('text=Title: Second blog').locator('button:has-text("Like!")').click()
+      await page.locator('text=Title: Second blog').locator('text=Likes: 1').waitFor()
+      await page.locator('text=Title: Second blog').locator('button:has-text("Like!")').click()
+      await page.locator('text=Title: Second blog').locator('text=Likes: 2').waitFor()
+      await page.locator('text=Title: Second blog').locator('button:has-text("Like!")').click()
+      await page.locator('text=Title: Second blog').locator('text=Likes: 3').waitFor()
+
+      // After the second blog has more likes, check that the first blog is 'Second blog' and second blog is 'First blog'
+      allBlogs = await page.locator('.blog').allTextContents()
+      expect(allBlogs[0]).toContain('Second blog')
+      expect(allBlogs[1]).toContain('First blog')
+      console.log('allblogs, second time:', allBlogs)
+      // If this passes, it means that the order of the blogs is based on the amount of likes, thus the sorting by likes is owrking
+
+    })
+
   })
 
 })

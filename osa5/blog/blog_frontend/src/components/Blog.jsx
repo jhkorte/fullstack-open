@@ -32,7 +32,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentlyLoggedUser }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       <div style={infoMinimum}>
         {blog.title} - {blog.author} - <button onClick={toggleShowAllInfo}>Show more</button>
       </div>
