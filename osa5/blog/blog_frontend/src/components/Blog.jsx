@@ -41,7 +41,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, currentlyLoggedUser }) => {
       Author: {blog.author} <br />
       URL: {blog.url} <br />
       Likes: {blog.likes} <button onClick={() => likeIncrement(blog)}>Like!</button> <br />
-      User that added this blog: {blog.user.username} <br />
+        {currentlyLoggedUser && blog.user.username }<br />
         {currentlyLoggedUser && currentlyLoggedUser.username === blog.user.username && (
           <button onClick={() => blogDelete(blog)}>Delete</button>
         )}
