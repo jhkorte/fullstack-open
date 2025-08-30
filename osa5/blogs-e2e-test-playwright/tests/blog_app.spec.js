@@ -1,7 +1,16 @@
 const { test, expect, describe, beforeEach } = require('@playwright/test')
 
 describe('Blog app', () => {
-  beforeEach(async ({ page }) => {
+  beforeEach(async ({ page, request }) => {
+    await request.post('http://localhost:3003/api/testing/reset')
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Jaakko Hyvönen',
+        username: 'jakessu',
+        password: 'mieoonturust'
+      }
+    })
+
     await page.goto('http://localhost:5173')
   })
 
@@ -10,12 +19,26 @@ describe('Blog app', () => {
     await expect(locator).toBeVisible()
   })
 
+  test('login form is shown', async ({ page }) => {
+    await expect(page.getByLabel('Username')).toBeVisible()
+    await expect(page.getByLabel('Password')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Login' })).toBeVisible()
+  })
+
   test('successful login is successful', async ({ page }) => {
     await page.getByLabel('Username').fill('jakessu')
     await page.getByLabel('Password').fill('mieoonturust')
     await page.getByRole('button', { name: 'Login' }).click()
 
     await expect(page.getByText('Jaakko Hyvönen is logged in')).toBeVisible()
+  })
+
+  test('bad login is unsuccessful', async ({ page }) => {
+    await page.getByLabel('Username').fill('jakessu123')
+    await page.getByLabel('Password').fill('wrongpassword')
+    await page.getByRole('button', { name: 'Login' }).click()
+
+    await expect(page.getByText('no user found with these credentials')).toBeVisible()
   })
 
   describe('when logged in', () => {
