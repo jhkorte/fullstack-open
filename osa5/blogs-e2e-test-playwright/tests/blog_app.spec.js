@@ -10,6 +10,13 @@ describe('Blog app', () => {
         password: 'mieoonturust'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Mikko Mikkonen',
+        username: 'theotheruser',
+        password: 'mieoonturust'
+      }
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -99,6 +106,35 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'Delete' }).click()
 
       await expect(page.getByText('Blog added from test - Tester -')).toBeHidden()
+    })
+
+    test('only the user that added the blog sees the delete button', async ({ page }) => {
+      // Currently logged in as jakessu
+      // Jakessu adds a blog
+      await page.getByRole('button', { name: 'Add a new blog' }).click()
+      await page.getByLabel('Title').fill('Blog added by jakessu')
+      await page.getByLabel('Author').fill('jakessu')
+      await page.getByLabel('URL').fill('test.com')
+      await page.getByRole('button', { name: 'Submit' }).click()
+
+      // Jakessu sees the delete button
+      await expect(page.getByText('Blog added by jakessu - jakessu -')).toBeVisible()
+      await page.getByRole('button', { name: 'Show more' }).click()
+      await expect(page.getByRole('button', { name: 'Delete' })).toBeVisible()
+
+      // Jakesssu logging out
+      await page.getByRole('button', { name: 'Log out' }).click()
+
+      // Other user logs in
+      await page.getByLabel('Username').fill('theotheruser')
+      await page.getByLabel('Password').fill('mieoonturust')
+      await page.getByRole('button', { name: 'Login' }).click()
+      await expect(page.getByText('Mikko Mikkonen is logged in')).toBeVisible()
+
+      // Other user doesnt see the delete button
+      await expect(page.getByText('Blog added by jakessu - jakessu -')).toBeVisible()
+      await page.getByRole('button', { name: 'Show more' }).click()
+      await expect(page.getByRole('button', { name: 'Delete' })).toBeHidden()
     })
 
   })
