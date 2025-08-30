@@ -25,21 +25,24 @@ describe('Blog app', () => {
     await expect(page.getByRole('button', { name: 'Login' })).toBeVisible()
   })
 
-  test('successful login is successful', async ({ page }) => {
-    await page.getByLabel('Username').fill('jakessu')
-    await page.getByLabel('Password').fill('mieoonturust')
-    await page.getByRole('button', { name: 'Login' }).click()
+  describe('Logging in', () => {
+    test('successful login is successful', async ({ page }) => {
+      await page.getByLabel('Username').fill('jakessu')
+      await page.getByLabel('Password').fill('mieoonturust')
+      await page.getByRole('button', { name: 'Login' }).click()
 
-    await expect(page.getByText('Jaakko Hyvönen is logged in')).toBeVisible()
+      await expect(page.getByText('Jaakko Hyvönen is logged in')).toBeVisible()
+    })
+
+    test('bad login is unsuccessful', async ({ page }) => {
+      await page.getByLabel('Username').fill('jakessu123')
+      await page.getByLabel('Password').fill('wrongpassword')
+      await page.getByRole('button', { name: 'Login' }).click()
+
+      await expect(page.getByText('no user found with these credentials')).toBeVisible()
+    })
   })
-
-  test('bad login is unsuccessful', async ({ page }) => {
-    await page.getByLabel('Username').fill('jakessu123')
-    await page.getByLabel('Password').fill('wrongpassword')
-    await page.getByRole('button', { name: 'Login' }).click()
-
-    await expect(page.getByText('no user found with these credentials')).toBeVisible()
-  })
+  
 
   describe('when logged in', () => {
     beforeEach(async ({ page }) => {
