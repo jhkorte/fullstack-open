@@ -11,9 +11,9 @@ const App = () => {
       <button onClick={() => store.dispatch({ type: 'OK' })}>ok</button>
       <button onClick={() => store.dispatch({ type: 'BAD' })}>bad</button>
       <button onClick={() => store.dispatch({ type: 'RESET' })}>reset stats</button>
-      <div>good {store.getState().good}</div>
-      <div>ok {store.getState().ok}</div>
-      <div>bad {store.getState().bad}</div>
+      <div>Good {store.getState().good}</div>
+      <div>OK {store.getState().ok}</div>
+      <div>Bad {store.getState().bad}</div>
     </div>
   )
 }
