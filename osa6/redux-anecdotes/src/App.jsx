@@ -1,4 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
+import { voteAnecdote } from './reducers/anecdoteReducer'
+import AnecdoteForm from './components/AnecdoteForm'
 
 const App = () => {
   const anecdotes = useSelector(state => state)
@@ -6,30 +8,14 @@ const App = () => {
 
   const vote = id => {
     console.log('vote', id)
-    dispatch({
-      type: 'VOTE', payload: {id: id}
-    })
-  }
-
-  const addAnecdote = event => {
-    event.preventDefault()
-    console.log('adding anecdote')
-    const content = event.target.anecdote.value
-    event.target.anecdote.value = '' //asetetaan formin täyttöalueen arvo tyhjäksi
-    console.log(content)
-    dispatch({
-      type: 'NEW_ANECDOTE',
-      payload: {
-        content: content,
-        id: (100000 * Math.random()).toFixed(0),
-        votes: 0
-      }
-    })
+    dispatch(voteAnecdote(id))
   }
 
   return (
     <div>
       <h2>Anecdotes</h2>
+      <AnecdoteForm />
+
       {anecdotes.map(anecdote => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
@@ -39,13 +25,7 @@ const App = () => {
           </div>
         </div>
       ))}
-      <h2>create new</h2>
-      <form onSubmit={addAnecdote}>
-        <div>
-          <input name="anecdote" />
-        </div>
-        <button type="submit">create</button>
-      </form>
+      
     </div>
   )
 }
